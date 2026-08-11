@@ -1,0 +1,58 @@
+{
+  "CSGD-NET|off": {
+    "ems_miss": 0.7043774537309583,
+    "ems_delay": 7.986401415443512,
+    "ems_p95": 15.833333333333334,
+    "norm_delay": 7.56273862620264,
+    "prio_mJ": 0.0,
+    "prio_false_pct": 0.0,
+    "drain_pct": 0.0,
+    "mJ_per_reading": 1.4975582050749285,
+    "pdr": 1.0,
+    "rounds": 16.416666666666668,
+    "detect": NaN,
+    "fpr": NaN
+  },
+  "CSGD-NET|on": {
+    "ems_miss": 0.0,
+    "ems_delay": 1.7372490122750788,
+    "ems_p95": 2.0,
+    "norm_delay": 7.494473347613288,
+    "prio_mJ": 310.8658952654932,
+    "prio_false_pct": 0.0,
+    "drain_pct": 0.0,
+    "mJ_per_reading": 1.529749713581219,
+    "pdr": 1.0,
+    "rounds": 16.0,
+    "detect": NaN,
+    "fpr": NaN
+  },
+  "CHIRP|off": {
+    "ems_miss": 0.9164506973115921,
+    "ems_delay": 10.044465442974797,
+    "ems_p95": 16.0,
+    "norm_delay": 10.11509911579107,
+    "prio_mJ": 0.0,
+    "prio_false_pct": 0.0,
+    "drain_pct": 0.0,
+    "mJ_per_reading": 1.3158741119105288,
+    "pdr": 1.0,
+    "rounds": 18.666666666666668,
+    "detect": NaN,
+    "fpr": NaN
+  },
+  "CHIRP|on": {
+    "ems_miss": 0.0,
+    "ems_delay": 1.9532707291826952,
+    "ems_p95": 2.0,
+    "norm_delay": 10.060889965846188,
+    "prio_mJ": 544.4859901242891,
+    "prio_false_pct": 0.0,
+    "drain_pct": 0.0,
+    "mJ_per_reading": 1.3282223102036135,
+    "pdr": 1.0,
+    "rounds": 18.5,
+    "detect": NaN,
+    "fpr": NaN
+  }
+}

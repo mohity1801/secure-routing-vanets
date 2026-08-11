@@ -1,0 +1,58 @@
+{
+  "CSGD-NET|off": {
+    "ems_miss": 0.8589583541328626,
+    "ems_delay": 10.650595047513931,
+    "ems_p95": 20.416666666666668,
+    "norm_delay": 10.532409461789177,
+    "prio_mJ": 0.0,
+    "prio_false_pct": 0.0,
+    "drain_pct": 0.0,
+    "mJ_per_reading": 0.7643382974033863,
+    "pdr": 1.0,
+    "rounds": 31.666666666666668,
+    "detect": NaN,
+    "fpr": NaN
+  },
+  "CSGD-NET|on": {
+    "ems_miss": 0.0,
+    "ems_delay": 1.9212824947524714,
+    "ems_p95": 2.0,
+    "norm_delay": 10.508530414069861,
+    "prio_mJ": 190.58150583178042,
+    "prio_false_pct": 0.0,
+    "drain_pct": 0.0,
+    "mJ_per_reading": 0.7674656081098519,
+    "pdr": 1.0,
+    "rounds": 31.25,
+    "detect": NaN,
+    "fpr": NaN
+  },
+  "CHIRP|off": {
+    "ems_miss": 0.9863198623074206,
+    "ems_delay": 10.577086064514885,
+    "ems_p95": 15.583333333333334,
+    "norm_delay": 10.519892729364699,
+    "prio_mJ": 0.0,
+    "prio_false_pct": 0.0,
+    "drain_pct": 0.0,
+    "mJ_per_reading": 0.7265868355547465,
+    "pdr": 1.0,
+    "rounds": 32.833333333333336,
+    "detect": NaN,
+    "fpr": NaN
+  },
+  "CHIRP|on": {
+    "ems_miss": 0.0,
+    "ems_delay": 1.9994623655913977,
+    "ems_p95": 2.0,
+    "norm_delay": 10.478021782259036,
+    "prio_mJ": 300.5025203144444,
+    "prio_false_pct": 0.0,
+    "drain_pct": 0.0,
+    "mJ_per_reading": 0.7307773036061938,
+    "pdr": 1.0,
+    "rounds": 32.833333333333336,
+    "detect": NaN,
+    "fpr": NaN
+  }
+}
