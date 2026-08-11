@@ -8,6 +8,9 @@ communications through green clustering and data aggregation"*, Cluster Computin
 Search with Levy flights plus a Gaussian random walk for cluster-head election,
 with fitness `f = E / (E0 · dist(CH, RSU))`.
 
+Start with `CLAUDE.md` for orientation, and `docs/related_work.md` before
+making any novelty claim.
+
 ## Gaps we close
 
 | # | Gap | Where the paper admits / shows it |
