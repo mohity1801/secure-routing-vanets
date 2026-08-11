@@ -1,0 +1,39 @@
+{
+  "sizes": {
+    "cert_fields": {
+      "pseudonym id": 8,
+      "public key (compressed point)": 33,
+      "role attribute": 1,
+      "validity start/end": 8,
+      "issuer id": 8,
+      "TA signature (ECDSA P-256)": 64
+    },
+    "cert_total": 122,
+    "openssl": "OpenSSL 3.6.1 27 Jan 2026 (Library: OpenSSL 3.6.1 27 Jan 2026)",
+    "sig_der": 71,
+    "pub_compressed_der": 59,
+    "pub_uncompressed_der": 91,
+    "sig_raw": 64
+  },
+  "ecdsa": {
+    "sign_per_s": 29901.1,
+    "verify_per_s": 10268.6,
+    "sign_us": 33.44358568748307,
+    "verify_us": 97.3842588084062
+  },
+  "mac": {
+    "mac_per_s": 604963.8785142746,
+    "mac_us": 1.6529912537189675,
+    "packet_bytes": 800
+  },
+  "sig_bits_digest": 576,
+  "sig_bits_full_cert": 1488,
+  "mac_bits": 128,
+  "radio_mJ": {
+    "30.0": 0.033984,
+    "60.0": 0.049536000000000004,
+    "90.0": 0.077928768,
+    "120.0": 0.18407116799999998,
+    "150.0": 0.4078800000000001
+  }
+}

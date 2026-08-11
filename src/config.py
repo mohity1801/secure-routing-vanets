@@ -181,10 +181,16 @@ class Config:
 
     # Per-message authentication overhead. Emergency traffic bypasses fusion so
     # it cannot be covered by the aggregate MAC and needs its own signature.
-    # Both default to 0 so Module 3b can fill in measured values later without
-    # invalidating anything measured now. See docs/priority.md.
-    sig_bits: int = 0               # per class-2 message
-    mac_bits: int = 0               # on the fused class-0 packet
+    #
+    # MEASURED IN MODULE 3B (src/crypto_bench.py, docs/module3b.md), from real
+    # keys and signatures rather than assumed:
+    #   sig_bits  64 B ECDSA P-256 signature (raw r||s, the IEEE 1609.2 form)
+    #             + 8 B HashedId8 certificate digest            = 72 B = 576 b
+    #   mac_bits  aggregate MAC truncated to 128 bits           = 16 B = 128 b
+    # The pessimistic variant, sending the full 122 B certificate on every
+    # class-2 message instead of a digest, is sig_bits = 1488.
+    sig_bits: int = 576             # per class-2 message
+    mac_bits: int = 128             # on the fused class-0 packet
 
     # Module 5b: only role-bearing (EMS) vehicles may assert class 2. Off by
     # default so the undefended case is the baseline.

@@ -56,9 +56,12 @@ with fitness `f = E / (E0 · dist(CH, RSU))`.
       (`docs/module3.md`) — 32 claims verified, 8 failing by design. Found and
       fixed a cross-protocol attack between the member-reading and fused-
       aggregate MACs.
-- [ ] Module 3b — measured crypto cost (bytes, ms, mJ) → `sig_bits`/`mac_bits`
+- [x] **Module 3b — measured crypto cost** (`docs/module3b.md`) — ECDSA P-256
+      sizes and timings from openssl; `sig_bits`=576, `mac_bits`=128 now
+      charged. Transmission cost of the whole crypto layer is +0.8–1.6 %;
+      **computation cost is ~15× the transmission cost it enables**, which
+      the base paper's model cannot see.
 - [ ] Week 1 — Figs. 11–15 regenerated
-- [ ] Week 2 — Module 3 (crypto layer)
 - [ ] Week 3 — Module 2, attack models, Module 4
 - [ ] Week 4 — full sweeps, statistics, paper draft, report, slides
 
