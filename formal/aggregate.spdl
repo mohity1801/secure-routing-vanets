@@ -1,0 +1,134 @@
+/*
+ * CHIRP Module 3a -- the three authenticated message types in the data path.
+ *
+ * Module 5 established that emergency traffic cannot be fused: a head cannot
+ * transmit a fused packet until every member's slot has passed, so fusion
+ * costs the whole TDMA frame in delay. Class-2 messages therefore bypass
+ * fusion and are relayed verbatim. That split gives three message types:
+ *
+ *   chirp-member      class-0 reading, member -> head, MAC'd under k(M,C)
+ *   chirp-aggregate   fused packet, head -> RSU, MAC'd under k(C,R)
+ *   chirp-verbatim    class-2 message, vehicle -> RSU, signed by the vehicle
+ *
+ * All three are in one file deliberately, so Scyther also searches for attacks
+ * that use one message type to forge another. It found one -- see below.
+ *
+ * ---------------------------------------------------------------------------
+ * DOMAIN SEPARATION TAGS -- ADDED IN RESPONSE TO AN ATTACK SCYTHER FOUND
+ * ---------------------------------------------------------------------------
+ * The first version of this model MAC'd both the member reading and the fused
+ * aggregate as {sender, value, nonce, receiver}k(sender,receiver). Those are
+ * structurally identical, so Scyther produced this trace:
+ *
+ *     Alice, as a HEAD sending a fused aggregate to RSU Charlie, emits
+ *         (Alice, agg, nc, {Alice, agg, nc, Charlie}k(Alice,Charlie))
+ *     Charlie accepts the same bitstring as a MEMBER READING from Alice.
+ *
+ * A head's aggregate could be replayed into another cluster as a member's
+ * reading, and vice versa. Niagree and Nisynch failed on both legs while
+ * Alive and Weakagree passed -- the receiver had the right peer but the wrong
+ * message meaning.
+ *
+ * The fix is the standard one: a distinct constant tag inside every MAC and
+ * signature, so the three message types occupy disjoint formats. This is
+ * recorded rather than silently patched because it is the concrete return on
+ * doing the formal work at all -- the flaw is invisible in the simulator,
+ * where message types are Python fields that cannot be confused.
+ *
+ * ---------------------------------------------------------------------------
+ * WHY THE RELAY IS NOT A ROLE IN chirp-verbatim
+ * ---------------------------------------------------------------------------
+ * The cluster head relays a class-2 message without modifying it. Modelling
+ * that relay as a Scyther ROLE makes Nisynch require the relay to be honest,
+ * which is strictly weaker than what we want to claim. Under Dolev-Yao the
+ * network already is the adversary, so a two-role V -> R protocol is the
+ * correct way to state "carried by an untrusted relay". Verified as such, the
+ * RSU authenticates the vehicle end to end no matter what the head does.
+ *
+ * The matching negative result -- that the RSU canNOT authenticate a member
+ * through a fused packet -- is in fusion-limit.spdl, kept separate so its
+ * failure is attributable to fusion alone.
+ */
+
+usertype RoleTag;
+usertype MsgTag;
+
+const EMS: RoleTag;
+
+const TagReading: MsgTag;       // class-0, member -> head
+const TagAggregate: MsgTag;     // class-0 fused, head -> RSU
+const TagEmergency: MsgTag;     // class-2, vehicle -> RSU, verbatim
+
+/* ---- class-0: member reading into the head ------------------------- */
+protocol chirp-member(M, C)
+{
+    role M
+    {
+        fresh reading: Nonce;
+        fresh nm: Nonce;
+        send_1(M, C, M, reading, nm, {TagReading, M, reading, nm, C}k(M,C));
+    }
+
+    role C
+    {
+        var reading: Nonce;
+        var nm: Nonce;
+        recv_1(M, C, M, reading, nm, {TagReading, M, reading, nm, C}k(M,C));
+
+        claim_C1(C, Alive);
+        claim_C2(C, Weakagree);
+        claim_C3(C, Niagree);
+        claim_C4(C, Nisynch);
+    }
+}
+
+/* ---- class-0: fused packet out to the RSU -------------------------- */
+protocol chirp-aggregate(C, R)
+{
+    role C
+    {
+        fresh agg: Nonce;
+        fresh nc: Nonce;
+        send_1(C, R, C, agg, nc, {TagAggregate, C, agg, nc, R}k(C,R));
+    }
+
+    role R
+    {
+        var agg: Nonce;
+        var nc: Nonce;
+        recv_1(C, R, C, agg, nc, {TagAggregate, C, agg, nc, R}k(C,R));
+
+        claim_R1(R, Alive);
+        claim_R2(R, Weakagree);
+        claim_R3(R, Niagree);
+        claim_R4(R, Nisynch);   /* authenticates THE HEAD -- see fusion-limit */
+    }
+}
+
+/* ---- class-2: emergency message, relayed verbatim ------------------ */
+protocol chirp-verbatim(V, R)
+{
+    role V
+    {
+        fresh pid: Nonce;
+        fresh emsg: Nonce;
+        fresh nv: Nonce;
+        send_1(V, R, V, pid, emsg, nv,
+               {TagEmergency, V, pid, EMS, emsg, nv, R}sk(V));
+    }
+
+    role R
+    {
+        var pid: Nonce;
+        var emsg: Nonce;
+        var nv: Nonce;
+        recv_1(V, R, V, pid, emsg, nv,
+               {TagEmergency, V, pid, EMS, emsg, nv, R}sk(V));
+
+        claim_R1(R, Alive);
+        claim_R2(R, Weakagree);
+        claim_R3(R, Niagree);
+        claim_R4(R, Nisynch);   /* end-to-end with the VEHICLE, through a
+                                 * relay that is not trusted at all */
+    }
+}

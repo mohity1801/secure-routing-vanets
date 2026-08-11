@@ -1,0 +1,118 @@
+/*
+ * CHIRP Module 3a -- authorised priority assertion. THE LOAD-BEARING MODEL.
+ *
+ * This is the one property in the project that formal verification is actually
+ * needed for, rather than being a box to tick. docs/priority.md finding 5
+ * measures the alternative: a behavioural detector that watches assertion
+ * RATES is blind to an attacker that asserts at the genuine rate (detection
+ * 0.008 on the highway, below its own false-positive rate) while that attacker
+ * still takes 48 % of the maximum deadline damage. Rate is not the
+ * distinguishing fact. Holding the role is. So the whole defence rests on one
+ * claim:
+ *
+ *     A cluster head grants a reserved emergency slot only to a vehicle
+ *     holding a TA-issued EMS role attribute, and never to a replay.
+ *
+ * That is injective agreement on an authorisation claim, and it is what
+ * claim_C4 below states.
+ *
+ * WHY THE TA IS A ROLE HERE RATHER THAN PRE-DISTRIBUTED DATA
+ * ----------------------------------------------------------
+ * Registration really happens offline and long before the assertion. Modelling
+ * it as a concurrent role lets the adversary interleave issuance with
+ * assertion, which is strictly more freedom than it has in deployment. The
+ * verification is therefore conservative: anything that holds here also holds
+ * when issuance is offline.
+ *
+ * WHY SOME CLAIMS IN THIS MODEL FAIL, AND WHY THAT IS NOT A VULNERABILITY
+ * ----------------------------------------------------------------------
+ * C's Niagree and Nisynch verify. C's Weakagree, and V's and TA's agreement
+ * claims, do not. The cause is structural: THE TA NEVER LEARNS WHICH CLUSTER
+ * HEAD THE VEHICLE WILL LATER TALK TO. Registration happens offline and once;
+ * message 1 carries no head identity and nothing ever tells the TA one.
+ * Weakagree over three roles asks whether every other role is running the
+ * protocol WITH the claimer, and the TA is not running with any head.
+ *
+ * That was tested, not assumed: delete the TA role, keep the assertion
+ * exchange otherwise identical, and all six claims verify. See
+ * priority-assert.spdl. The two models together cover provenance and the
+ * exchange with nothing papered over.
+ *
+ * READING THE CLAIMS
+ * ------------------
+ * C's Nisynch is the one that matters. In a three-role protocol it requires
+ * every preceding event in EVERY role to have a matching partner, so if it
+ * holds then C's grant implies there was a real TA run that issued that role
+ * to that vehicle, and a real V run that asserted it, agreeing on pseudonym,
+ * role and nonce. Niagree is the weaker data-agreement form; Alive and
+ * Weakagree are reported so a failure can be localised on Lowe's hierarchy
+ * rather than just observed.
+ */
+
+usertype RoleTag;
+usertype MsgTag;
+
+const EMS: RoleTag;
+const Ordinary: RoleTag;
+
+/* Domain separation. Scyther found a cross-protocol attack in an untagged
+ * version of aggregate.spdl -- two message types with the same shape were
+ * interchangeable. Every signed or MAC'd term in the suite now carries a
+ * distinct tag so the formats are disjoint by construction. */
+const TagCertReq: MsgTag;
+const TagCert: MsgTag;
+const TagAssert: MsgTag;
+const TagGrant: MsgTag;
+
+protocol chirp-priority(V, TA, C)
+{
+    role V
+    {
+        fresh pid: Nonce;
+        fresh nv: Nonce;
+        var nc: Nonce;
+
+        /* Phase I -- obtain the role certificate (see register.spdl) */
+        send_1(V, TA, V, {TagCertReq, V, pid, EMS}k(V,TA));
+        recv_2(TA, V, {TagCert, pid, EMS, V}sk(TA));
+
+        /* Phase II -- assert class-2 priority to the cluster head.
+         * The certificate carries the role; the second signature binds this
+         * particular assertion to this pseudonym, this nonce and THIS head, so
+         * an assertion overheard in one cluster cannot be relayed into
+         * another. */
+        send_3(V, C, V, {TagCert, pid, EMS, V}sk(TA), nv, {TagAssert, V, pid, EMS, nv, C}sk(V));
+        recv_4(C, V, {TagGrant, nv, nc, V, C}sk(C));
+
+        claim_V1(V, Alive);
+        claim_V2(V, Weakagree);
+        claim_V3(V, Niagree);
+        claim_V4(V, Nisynch);
+    }
+
+    role TA
+    {
+        var pid: Nonce;
+
+        recv_1(V, TA, V, {TagCertReq, V, pid, EMS}k(V,TA));
+        send_2(TA, V, {TagCert, pid, EMS, V}sk(TA));
+
+        claim_TA1(TA, Alive);
+        claim_TA2(TA, Weakagree);
+    }
+
+    role C
+    {
+        var pid: Nonce;
+        var nv: Nonce;
+        fresh nc: Nonce;
+
+        recv_3(V, C, V, {TagCert, pid, EMS, V}sk(TA), nv, {TagAssert, V, pid, EMS, nv, C}sk(V));
+        send_4(C, V, {TagGrant, nv, nc, V, C}sk(C));
+
+        claim_C1(C, Alive);
+        claim_C2(C, Weakagree);
+        claim_C3(C, Niagree);
+        claim_C4(C, Nisynch);       /* <-- the slot-grant property */
+    }
+}

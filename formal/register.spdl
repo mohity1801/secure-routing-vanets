@@ -1,0 +1,72 @@
+/*
+ * CHIRP Module 3a -- pseudonym certificate issuance with a role attribute.
+ *
+ * Phase I of the crypto layer. The TA binds a pseudonym to a role attribute
+ * and signs it. Module 5's `require_ems_auth` assumes exactly this artefact
+ * exists and is unforgeable; this model is where that assumption is discharged
+ * rather than asserted.
+ *
+ * WHY THE PROVISIONING KEY k(V,TA) IS IN MESSAGE 1
+ * ------------------------------------------------
+ * Without it the model would have a TA that hands an EMS certificate to
+ * anyone who asks, which makes Module 5's authorisation defence vacuous: the
+ * false-priority attacker would simply register as an ambulance. The genuine
+ * emergency vehicle is provisioned out of band, when it is commissioned, with
+ * a credential the TA recognises. Message 1 proves possession of it.
+ *
+ * WHAT THIS MODEL DOES NOT COVER, AND CANNOT
+ * ------------------------------------------
+ * - The TA's out-of-band vetting. That an EMS credential was issued only to a
+ *   real ambulance is a policy assumption about the registration desk, not a
+ *   property of any message exchange. Scyther cannot see it.
+ * - Conditional privacy / unlinkability. Whether an observer can link two
+ *   pseudonyms of the same vehicle is an equivalence property. Scyther proves
+ *   secrecy and authentication only; this needs ProVerif observational
+ *   equivalence or Tamarin's diff mode. Stated as a limitation, not verified.
+ * - Pseudonym confidentiality. A signature is not an envelope: {m}sk(TA) is
+ *   readable by anyone holding pk(TA), which is everyone. The pseudonym is
+ *   public by design -- it is unlinkable, not secret -- so no Secret claim is
+ *   made on it. Claiming one here would fail, and correctly so.
+ */
+
+usertype RoleTag;
+usertype MsgTag;
+
+const EMS: RoleTag;         // emergency-vehicle role attribute
+const Ordinary: RoleTag;    // every other vehicle; carried for completeness
+
+/* Domain separation; see the note in aggregate.spdl. */
+const TagCertReq: MsgTag;
+const TagCert: MsgTag;
+
+protocol chirp-register(V, TA)
+{
+    role V
+    {
+        fresh pid: Nonce;       // the pseudonym this certificate will bind
+        fresh nv: Nonce;        // freshness, so an old certificate cannot be
+                                // replayed back at the vehicle as a new one
+
+        send_1(V, TA, V, {TagCertReq, V, pid, EMS, nv}k(V,TA));
+        recv_2(TA, V, {TagCert, pid, EMS, V, nv}sk(TA));
+
+        claim_V1(V, Alive);
+        claim_V2(V, Weakagree);
+        claim_V3(V, Niagree);
+        claim_V4(V, Nisynch);
+    }
+
+    role TA
+    {
+        var pid: Nonce;
+        var nv: Nonce;
+
+        recv_1(V, TA, V, {TagCertReq, V, pid, EMS, nv}k(V,TA));
+        send_2(TA, V, {TagCert, pid, EMS, V, nv}sk(TA));
+
+        claim_TA1(TA, Alive);
+        claim_TA2(TA, Weakagree);
+        claim_TA3(TA, Niagree);
+        claim_TA4(TA, Nisynch);
+    }
+}

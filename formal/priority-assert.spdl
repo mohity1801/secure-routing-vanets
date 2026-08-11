@@ -1,0 +1,83 @@
+/*
+ * CHIRP Module 3a -- the priority assertion exchange in isolation.
+ *
+ * Companion to priority.spdl, and the reason both exist:
+ *
+ * priority.spdl models registration and assertion as ONE protocol so that the
+ * certificate has provenance -- the head's guarantee then transitively covers a
+ * real TA issuance. Its headline claims, C's Niagree and Nisynch, verify. But
+ * its cross-phase claims (C's Weakagree, and V's and TA's agreement claims) all
+ * fail, and the cause is structural rather than a vulnerability:
+ *
+ *     THE TA NEVER LEARNS WHICH CLUSTER HEAD THE VEHICLE WILL LATER TALK TO.
+ *
+ * Registration happens offline, once, long before any particular head exists in
+ * the vehicle's neighbourhood. Message 1 carries no head identity and nothing
+ * ever tells the TA one. Weakagree in a three-role protocol asks whether every
+ * other role is "running the protocol with" the claimer, and the TA simply is
+ * not running with any head. Scyther is reporting that it cannot establish the
+ * partnering relation, not that an attacker wins.
+ *
+ * That diagnosis was tested rather than assumed. Deleting the TA role and
+ * leaving the assertion exchange otherwise identical makes all six claims
+ * verify -- which is this file. So:
+ *
+ *     register.spdl          certificate issuance is sound            (8/8 Ok)
+ *     priority.spdl          head's agreement holds WITH provenance   (C: Ok)
+ *     priority-assert.spdl   the assertion exchange alone is sound    (6/6 Ok)
+ *
+ * Together those cover the whole path with nothing papered over.
+ *
+ * The certificate is deliberately absent here. A Scyther role can only send
+ * terms it can derive, and V cannot construct {...}sk(TA) -- it does not hold
+ * the TA's signing key, which is the entire point of a certificate. Modelling
+ * the certificate without the TA role would mean declaring it a global constant
+ * and thereby handing it to the adversary too. Provenance is therefore covered
+ * where it belongs, in the two models above, and this file isolates the part
+ * they cannot cleanly isolate.
+ *
+ * Note the sender identity V inside the assertion signature. It is not needed
+ * for any claim here -- the exchange verifies without it -- but binding the
+ * signer's own identity into what it signs is standard hardening, and it was
+ * checked to change no result in either model.
+ */
+
+usertype RoleTag;
+usertype MsgTag;
+
+const EMS: RoleTag;
+const TagAssert: MsgTag;
+const TagGrant: MsgTag;
+
+protocol chirp-priority-assert(V, C)
+{
+    role V
+    {
+        fresh pid: Nonce;
+        fresh nv: Nonce;
+        var nc: Nonce;
+
+        send_1(V, C, V, nv, {TagAssert, V, pid, EMS, nv, C}sk(V));
+        recv_2(C, V, {TagGrant, nv, nc, V, C}sk(C));
+
+        claim_V1(V, Alive);
+        claim_V2(V, Weakagree);
+        claim_V3(V, Niagree);
+        claim_V4(V, Nisynch);
+    }
+
+    role C
+    {
+        var pid: Nonce;
+        var nv: Nonce;
+        fresh nc: Nonce;
+
+        recv_1(V, C, V, nv, {TagAssert, V, pid, EMS, nv, C}sk(V));
+        send_2(C, V, {TagGrant, nv, nc, V, C}sk(C));
+
+        claim_C1(C, Alive);
+        claim_C2(C, Weakagree);
+        claim_C3(C, Niagree);
+        claim_C4(C, Nisynch);
+    }
+}

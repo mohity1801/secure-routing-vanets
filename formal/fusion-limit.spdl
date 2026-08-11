@@ -1,0 +1,73 @@
+/*
+ * CHIRP Module 3a -- a deliberate negative result.
+ *
+ * THIS MODEL IS EXPECTED TO FAIL. It is not a protocol we propose; it is the
+ * statement of a limit, checked rather than asserted.
+ *
+ * The question: can the RSU authenticate the MEMBER whose reading is inside a
+ * fused packet? The chain is
+ *
+ *     M --{TagReading, M, reading, nm, C}k(M,C)--> C
+ *     C --{TagAggregate, C, agg, nc, R}k(C,R)---> R
+ *
+ * Both legs are individually sound -- aggregate.spdl verifies them. But the
+ * fused value `agg` is a fresh term at the head, not a function of `reading`,
+ * because fusion is lossy and non-invertible. Nothing the RSU receives binds
+ * the aggregate to the readings that produced it.
+ *
+ * So R's Nisynch over all three roles should FAIL, and it does. That failure
+ * is the point: it is the formal counterpart of a property the simulator
+ * cannot express, namely that a compromised cluster head can fabricate a fused
+ * value and no aggregate MAC will detect it. The MAC attests to WHO SENT the
+ * value, never to whether the value faithfully summarises anything.
+ *
+ * Kept in its own file so the failure is attributable to fusion alone, rather
+ * than to cross-protocol interference with the very message types it is built
+ * from. Its message formats reuse aggregate.spdl's tags on purpose: this is
+ * the same deployed protocol, examined end to end.
+ *
+ * Consequence for the architecture, and it is not a latency argument:
+ * chirp-verbatim in aggregate.spdl DOES verify end-to-end, because a class-2
+ * message is never transformed and the vehicle's signature survives the relay.
+ * The class-2 bypass is therefore the only path in CHIRP that gives the RSU
+ * end-to-end authentication of the originating vehicle. Fusion buys energy and
+ * costs provenance.
+ */
+
+usertype MsgTag;
+
+const TagReading: MsgTag;
+const TagAggregate: MsgTag;
+
+protocol chirp-fused-e2e(M, C, R)
+{
+    role M
+    {
+        fresh reading: Nonce;
+        fresh nm: Nonce;
+        send_1(M, C, M, reading, nm, {TagReading, M, reading, nm, C}k(M,C));
+    }
+
+    role C
+    {
+        var reading: Nonce;
+        var nm: Nonce;
+        fresh agg: Nonce;       /* the fused value: fresh at the head, NOT a
+                                 * recoverable function of `reading` */
+        fresh nc: Nonce;
+
+        recv_1(M, C, M, reading, nm, {TagReading, M, reading, nm, C}k(M,C));
+        send_2(C, R, C, agg, nc, {TagAggregate, C, agg, nc, R}k(C,R));
+    }
+
+    role R
+    {
+        var agg: Nonce;
+        var nc: Nonce;
+        recv_2(C, R, C, agg, nc, {TagAggregate, C, agg, nc, R}k(C,R));
+
+        /* EXPECTED TO FAIL. R has no cryptographic link to M. */
+        claim_R3(R, Niagree);
+        claim_R4(R, Nisynch);
+    }
+}

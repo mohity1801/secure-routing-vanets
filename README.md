@@ -52,6 +52,11 @@ with fitness `f = E / (E0 · dist(CH, RSU))`.
 - [x] **Module 1 — mobility + multi-metric CH election** (`docs/module1.md`)
 - [x] **Module 2 — trust engine + Layer-A attacks** (`docs/module2.md`)
 - [x] **Module 5 — priority traffic + false-priority attack** (`docs/priority.md`)
+- [x] **Module 3a — Scyther verification of the authorisation layer**
+      (`docs/module3.md`) — 32 claims verified, 8 failing by design. Found and
+      fixed a cross-protocol attack between the member-reading and fused-
+      aggregate MACs.
+- [ ] Module 3b — measured crypto cost (bytes, ms, mJ) → `sig_bits`/`mac_bits`
 - [ ] Week 1 — Figs. 11–15 regenerated
 - [ ] Week 2 — Module 3 (crypto layer)
 - [ ] Week 3 — Module 2, attack models, Module 4
