@@ -20,6 +20,7 @@ long version: what is done, what is decided, what is open, and what will bite yo
 | Module 3a — Scyther verification | **done** | `docs/module3.md`, 32 verified / 8 by design |
 | Module 3b — measured crypto cost | **done** | `docs/module3b.md`, `results/crypto_bench.json` |
 | Module 5 — priority traffic and its attack | **done** | `docs/priority.md`, 12–16 seeds, both scenarios |
+| 802.11p path-loss robustness check | **done** | `docs/radio.md`, `src/run_radio.py`, six findings verified under both radio models |
 | **Module 4 — RSU-side IDS** | **NOT STARTED** | see §5 |
 | Figs. 11–15 regeneration | not started | listed in `README.md` |
 | Report / paper draft / slides | not started | — |
@@ -109,6 +110,14 @@ trust FPR cost 0.015; the pre-crypto coverage/latency table (HEED 46.8/4.22/0.27
   assertions — the corrections are part of the contribution.
 - **Estimates stay labelled.** Everything about OBU computation energy is an
   extrapolation with stated assumptions, not a measurement.
+- **`results/module1_ablation_*.json` are historical evidence, not
+  reproducible outputs.** They were produced by the *pre-reallocation*
+  objective (w_let = 0.25, stability-triggered re-clustering, elect/rd 0.79)
+  and are the measurements that SET today's weights — re-running
+  `run_module1.py --ablate` at current defaults gives different numbers
+  (full-objective FND 23.2, not 16.2) and must not overwrite them. The
+  current-defaults ablation, under both radio models, lives in
+  `results/radio_ablation_highway.json`.
 
 ---
 
@@ -142,15 +151,19 @@ the valuable half, not the classifier.
 
 ## 6. Open decision 2 — publication blockers
 
-Neither blocks the BTP; both block a journal submission.
+One resolved, one open. Neither blocked the BTP.
 
-1. **Heinzelman radio at VANET distances.** `docs/module1.md` concedes it: d⁴ at
-   100–150 m makes absolute lifetimes unrealistic. Needs a robustness check
-   under an 802.11p / WINNER+ path-loss model showing the free-ride and
-   intra-term results survive.
-2. **Synthetic mobility.** Both scenarios come from `src/mobility.py`, not SUMO.
-   Comparison paper P3 uses SUMO + OSM + NS-2.35. A day or two of work, removes
-   an easy reviewer objection.
+1. **Heinzelman radio at VANET distances — RESOLVED.** `docs/radio.md` /
+   `src/run_radio.py` re-run the six headline findings under log-distance
+   path loss with no knee (γ = 2.0 highway, 3.0 urban, calibrated to agree
+   with Heinzelman at d0). All six hold; two get *stronger* (the free ride
+   grows to 2.21–3.02×, the crypto break-even moves out to 263–454 m); the
+   one thing that moved is an explanation, not a finding — the urban premium
+   on the cost of priority was the d⁴ knee, and `docs/priority.md` finding 2
+   is re-scoped accordingly. Default radio unchanged; gate still 55/55.
+2. **Synthetic mobility — OPEN.** Both scenarios come from `src/mobility.py`,
+   not SUMO. Comparison paper P3 uses SUMO + OSM + NS-2.35. A day or two of
+   work, removes an easy reviewer objection.
 
 Also open but lower priority: computation energy is measured and reported but
 **not charged** in the simulator (charging it would move the Module 1 and 2

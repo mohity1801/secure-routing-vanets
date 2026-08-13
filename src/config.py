@@ -40,6 +40,16 @@ class Config:
     e_da: float = 5e-9              # J/bit/signal, aggregation cost (not stated
                                     # in the paper; standard LEACH value)
 
+    # Which propagation model prices the amplifier term; see src/energy.py.
+    #   "heinzelman"  the base paper's d^2/d^4 model. DEFAULT -- every
+    #                 documented result and the regression gate use it.
+    #   "logdistance" 802.11p robustness check (docs/radio.md): a single
+    #                 exponent `path_loss_exp`, no d0 knee, calibrated to
+    #                 charge the same amplifier energy at d0 = 87.71 m.
+    # Exponents used by run_radio.py: 2.0 highway LOS, 3.0 urban.
+    radio_model: str = "heinzelman"
+    path_loss_exp: float = 2.0
+
     # --- TDMA frames per round; fitted to Table 4's LEACH column ---
     packets_per_round: int = 22
 
@@ -216,6 +226,13 @@ class Config:
     def d0(self) -> float:
         """Free-space / multipath crossover distance."""
         return (self.eps_fs / self.eps_mp) ** 0.5
+
+    @property
+    def eps_ld(self) -> float:
+        """Log-distance amplifier coefficient (J/bit/m^gamma), calibrated so
+        the logdistance and heinzelman models charge the same amplifier energy
+        at d0, the one distance where Heinzelman's own branches agree."""
+        return self.eps_fs * self.d0 ** (2.0 - self.path_loss_exp)
 
     @property
     def n_ch(self) -> int:

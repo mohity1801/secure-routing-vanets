@@ -1,0 +1,194 @@
+{
+  "heinzelman": {
+    "none (full)": {
+      "fnd": 23.2,
+      "hnd": 31.8,
+      "lnd": 39.6,
+      "mj_per_reading": 0.7186080578654539,
+      "orphan": 0.001250271166077059,
+      "intra": 27.375648679433397,
+      "elections": 1.0,
+      "residual": 0.0
+    },
+    "w_energy": {
+      "fnd": 18.1,
+      "hnd": 32.0,
+      "lnd": 48.1,
+      "mj_per_reading": 0.7027043734684214,
+      "orphan": 0.001908813241859382,
+      "intra": 24.58593646709679,
+      "elections": 1.0,
+      "residual": 0.0
+    },
+    "w_rsu": {
+      "fnd": 22.1,
+      "hnd": 31.7,
+      "lnd": 38.7,
+      "mj_per_reading": 0.7209637906152507,
+      "orphan": 0.0033687155482726725,
+      "intra": 27.467168489280574,
+      "elections": 1.0,
+      "residual": 0.0
+    },
+    "w_intra": {
+      "fnd": 21.8,
+      "hnd": 31.0,
+      "lnd": 37.8,
+      "mj_per_reading": 0.7365493659432065,
+      "orphan": 0.001963713167635351,
+      "intra": 31.727015472757945,
+      "elections": 1.0,
+      "residual": 0.0
+    },
+    "w_let": {
+      "fnd": 23.3,
+      "hnd": 32.0,
+      "lnd": 39.1,
+      "mj_per_reading": 0.7180867018757728,
+      "orphan": 0.0017465396149076487,
+      "intra": 27.654483895665397,
+      "elections": 1.0,
+      "residual": 0.0
+    },
+    "w_balance": {
+      "fnd": 23.0,
+      "hnd": 31.8,
+      "lnd": 40.1,
+      "mj_per_reading": 0.7194734604985273,
+      "orphan": 0.002622612531491676,
+      "intra": 27.286128968179092,
+      "elections": 1.0,
+      "residual": 0.0
+    },
+    "_deltas": {
+      "w_energy": {
+        "fnd_pct": -21.982758620689648,
+        "mj_pct": -2.2131235828711127,
+        "intra_pct": -10.19048806844327
+      },
+      "w_rsu": {
+        "fnd_pct": -4.741379310344818,
+        "mj_pct": 0.32781886092319024,
+        "intra_pct": 0.33431101822962717
+      },
+      "w_intra": {
+        "fnd_pct": -6.034482758620685,
+        "mj_pct": 2.496675048571717,
+        "intra_pct": 15.895027161835307
+      },
+      "w_let": {
+        "fnd_pct": 0.4310344827586299,
+        "mj_pct": -0.0725508131970698,
+        "intra_pct": 1.0185519966928958
+      },
+      "w_balance": {
+        "fnd_pct": -0.8620689655172376,
+        "mj_pct": 0.12042762721642397,
+        "intra_pct": -0.3270048951262261
+      }
+    }
+  },
+  "logdistance": {
+    "none (full)": {
+      "fnd": 23.3,
+      "hnd": 31.9,
+      "lnd": 39.9,
+      "mj_per_reading": 0.7154775802787559,
+      "orphan": 0.0012253748904024278,
+      "intra": 26.80652775936944,
+      "elections": 1.0,
+      "residual": 0.0
+    },
+    "w_energy": {
+      "fnd": 18.4,
+      "hnd": 31.9,
+      "lnd": 48.6,
+      "mj_per_reading": 0.7032569402439948,
+      "orphan": 0.0016950805108050574,
+      "intra": 24.264426337872646,
+      "elections": 1.0,
+      "residual": 0.0
+    },
+    "w_rsu": {
+      "fnd": 22.7,
+      "hnd": 31.8,
+      "lnd": 40.0,
+      "mj_per_reading": 0.7177532273173943,
+      "orphan": 0.0010749002991285676,
+      "intra": 26.412020919944098,
+      "elections": 1.0,
+      "residual": 0.0
+    },
+    "w_intra": {
+      "fnd": 23.0,
+      "hnd": 30.9,
+      "lnd": 38.4,
+      "mj_per_reading": 0.7380890307795849,
+      "orphan": 0.004938642171370883,
+      "intra": 31.16153105388015,
+      "elections": 1.0,
+      "residual": 0.0
+    },
+    "w_let": {
+      "fnd": 22.7,
+      "hnd": 31.9,
+      "lnd": 39.2,
+      "mj_per_reading": 0.717705127318218,
+      "orphan": 0.0025448116743786733,
+      "intra": 27.804249129246188,
+      "elections": 1.0,
+      "residual": 0.0
+    },
+    "w_balance": {
+      "fnd": 23.4,
+      "hnd": 31.9,
+      "lnd": 40.1,
+      "mj_per_reading": 0.7171360698595234,
+      "orphan": 0.002439231288091285,
+      "intra": 27.177417880197005,
+      "elections": 1.0,
+      "residual": 0.0
+    },
+    "_deltas": {
+      "w_energy": {
+        "fnd_pct": -21.03004291845494,
+        "mj_pct": -1.708039548912188,
+        "intra_pct": -9.483143226590684
+      },
+      "w_rsu": {
+        "fnd_pct": -2.5751072961373467,
+        "mj_pct": 0.31805986677484466,
+        "intra_pct": -1.4716819834581285
+      },
+      "w_intra": {
+        "fnd_pct": -1.2875536480686733,
+        "mj_pct": 3.1603297048133028,
+        "intra_pct": 16.246055190749374
+      },
+      "w_let": {
+        "fnd_pct": -2.5751072961373467,
+        "mj_pct": 0.31133708460777676,
+        "intra_pct": 3.721934369243418
+      },
+      "w_balance": {
+        "fnd_pct": 0.42918454935620964,
+        "mj_pct": 0.23180175402859327,
+        "intra_pct": 1.3835813580814538
+      }
+    }
+  },
+  "_check": {
+    "committed": "results/module1_ablation_highway.json",
+    "status": "MISMATCH",
+    "n_identical": 6,
+    "n_mismatch": 42
+  },
+  "_meta": {
+    "experiment": "ablation",
+    "scenario": "highway",
+    "seeds": 10,
+    "rounds": 120,
+    "path_loss_exp": 2.0,
+    "generated_by": "src/run_radio.py"
+  }
+}

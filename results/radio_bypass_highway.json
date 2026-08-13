@@ -1,0 +1,136 @@
+{
+  "heinzelman": {
+    "CSGD-NET|off": {
+      "ems_miss": 0.8558066536279503,
+      "ems_delay": 10.581801241678882,
+      "ems_p95": 20.666666666666668,
+      "norm_delay": 10.514473207338014,
+      "prio_mJ": 0.0,
+      "prio_false_pct": 0.0,
+      "drain_pct": 0.0,
+      "mJ_per_reading": 0.7655486847634125,
+      "pdr": 1.0,
+      "rounds": 31.5,
+      "detect": NaN,
+      "fpr": NaN
+    },
+    "CSGD-NET|on": {
+      "ems_miss": 0.0,
+      "ems_delay": 1.9054076849208614,
+      "ems_p95": 2.0,
+      "norm_delay": 10.444556191420535,
+      "prio_mJ": 207.22571293859247,
+      "prio_false_pct": 0.0,
+      "drain_pct": 0.0,
+      "mJ_per_reading": 0.7644845561476662,
+      "pdr": 1.0,
+      "rounds": 31.5,
+      "detect": NaN,
+      "fpr": NaN
+    },
+    "CHIRP|off": {
+      "ems_miss": 0.9876458463529194,
+      "ems_delay": 10.572256328924448,
+      "ems_p95": 15.666666666666666,
+      "norm_delay": 10.523179692554328,
+      "prio_mJ": 0.0,
+      "prio_false_pct": 0.0,
+      "drain_pct": 0.0,
+      "mJ_per_reading": 0.7284972124229846,
+      "pdr": 1.0,
+      "rounds": 32.666666666666664,
+      "detect": NaN,
+      "fpr": NaN
+    },
+    "CHIRP|on": {
+      "ems_miss": 0.0,
+      "ems_delay": 1.9994444444444444,
+      "ems_p95": 2.0,
+      "norm_delay": 10.4679414551553,
+      "prio_mJ": 328.15807067115026,
+      "prio_false_pct": 0.0,
+      "drain_pct": 0.0,
+      "mJ_per_reading": 0.7322589706239233,
+      "pdr": 1.0,
+      "rounds": 32.666666666666664,
+      "detect": NaN,
+      "fpr": NaN
+    },
+    "_cost_CSGD-NET": -0.13900208267946246,
+    "_cost_CHIRP": 0.5163723534956421
+  },
+  "logdistance": {
+    "CSGD-NET|off": {
+      "ems_miss": 0.8481484352485364,
+      "ems_delay": 10.69198752794347,
+      "ems_p95": 21.0,
+      "norm_delay": 10.600563597656143,
+      "prio_mJ": 0.0,
+      "prio_false_pct": 0.0,
+      "drain_pct": 0.0,
+      "mJ_per_reading": 0.758705731740314,
+      "pdr": 1.0,
+      "rounds": 31.833333333333332,
+      "detect": NaN,
+      "fpr": NaN
+    },
+    "CSGD-NET|on": {
+      "ems_miss": 0.0,
+      "ems_delay": 1.8840428720329843,
+      "ems_p95": 2.0,
+      "norm_delay": 10.280897501678846,
+      "prio_mJ": 204.2873740186716,
+      "prio_false_pct": 0.0,
+      "drain_pct": 0.0,
+      "mJ_per_reading": 0.7568182149915632,
+      "pdr": 1.0,
+      "rounds": 31.833333333333332,
+      "detect": NaN,
+      "fpr": NaN
+    },
+    "CHIRP|off": {
+      "ems_miss": 0.9808971651703328,
+      "ems_delay": 10.594321002349181,
+      "ems_p95": 15.833333333333334,
+      "norm_delay": 10.527049725803716,
+      "prio_mJ": 0.0,
+      "prio_false_pct": 0.0,
+      "drain_pct": 0.0,
+      "mJ_per_reading": 0.7243559767028777,
+      "pdr": 1.0,
+      "rounds": 33.0,
+      "detect": NaN,
+      "fpr": NaN
+    },
+    "CHIRP|on": {
+      "ems_miss": 0.0,
+      "ems_delay": 2.0,
+      "ems_p95": 2.0,
+      "norm_delay": 10.536722920498493,
+      "prio_mJ": 319.4967943976172,
+      "prio_false_pct": 0.0,
+      "drain_pct": 0.0,
+      "mJ_per_reading": 0.7313002272719044,
+      "pdr": 1.0,
+      "rounds": 32.416666666666664,
+      "detect": NaN,
+      "fpr": NaN
+    },
+    "_cost_CSGD-NET": -0.24878113737472063,
+    "_cost_CHIRP": 0.958679267151985
+  },
+  "_check": {
+    "committed": "results/priority_bypass_highway.json",
+    "status": "OK",
+    "n_identical": 48,
+    "n_mismatch": 0
+  },
+  "_meta": {
+    "experiment": "bypass",
+    "scenario": "highway",
+    "seeds": 12,
+    "rounds": 60,
+    "path_loss_exp": 2.0,
+    "generated_by": "src/run_radio.py"
+  }
+}

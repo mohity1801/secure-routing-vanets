@@ -196,6 +196,16 @@ absolute lifetimes short. Trends between protocols remain comparable because all
 protocols are charged identically, but absolute round counts should not be read
 as realistic OBU lifetimes. The base paper's 50×50 m field hides this entirely.
 
+**This limitation is now measured rather than conceded** (`docs/radio.md`,
+`src/run_radio.py`): under log-distance path loss with no knee (γ = 2.0
+highway, 3.0 urban) the seven-protocol energy ordering is identical, every
+significant CHIRP-vs-CSGD-NET delta keeps its direction and significance, FND
+stays statistically indistinguishable in urban, and the ablation still finds
+energy and intra the only load-bearing terms. Absolute lifetimes stretch
+~30 % in urban — the artifact correcting itself — and the highway table
+barely moves at all, because its heads sit inside the 87.71 m knee where the
+two models coincide.
+
 ## Reproduce
 
 ```bash

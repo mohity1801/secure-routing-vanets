@@ -124,6 +124,14 @@ many heads past the knee into the d⁴ regime, where each verbatim forward is
 disproportionately expensive. A deployment that wants cheap priority handling
 should buy RSUs, not bandwidth.
 
+> **Re-scoped by the radio robustness check** (`docs/radio.md`): this
+> explanation is specific to the Heinzelman model, and the model is what makes
+> it true. Under log-distance path loss with no knee the urban premium
+> vanishes — the bypass costs under 1 % in both scenarios (CHIRP +0.90 %
+> urban, +0.96 % highway) and deadline-miss is still 0.000 everywhere. The
+> claim that survives every model is the cheaper one: priority costs a small
+> single-digit percentage at any RSU density tested.
+
 **Correction.** The first version of this document reported CHIRP paying *less
 than half* what CSGD-NET pays in urban, and attributed it to Module 1's
 energy-scored RSU term. With crypto charged the urban ordering reverses —

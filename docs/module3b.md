@@ -136,6 +136,13 @@ At a plausible 25× slowdown and 0.5 W, verification costs **1.22 mJ against
 0.078 mJ to transmit what it verifies — about 15×.** On this laptop at 1 W it
 is already past break-even.
 
+This ratio has radio energy in its denominator, so it was the finding most
+exposed to the base paper's d⁴ model. Re-priced under log-distance path loss
+(`docs/radio.md`): 15.9–16.1× at the 90 m reference, and the distance beyond
+which radio overtakes computation moves *out*, from 200 m to 263 m (urban
+γ=3) and 454 m (highway γ=2). The d⁴ branch was inflating the radio side, so
+Heinzelman is the conservative model for this claim.
+
 **So the cost of the crypto layer is dominated by computation, and the base
 paper's model is structurally incapable of showing that**, because it charges
 only radio. Module 5's "cost of priority" figures remain a lower bound — not

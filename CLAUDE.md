@@ -90,6 +90,7 @@ python3 src/run_priority.py --scenario urban --seeds 6  --rounds 40 --coverage-l
 python3 src/run_priority.py --scenario urban --seeds 16 --crypto-decomp
 python3 src/crypto_bench.py                                  # crypto sizes/timings
 python3 src/verify_table4.py                                 # the Table 4 argument
+python3 src/run_radio.py --experiment all                    # 802.11p robustness (docs/radio.md)
 ```
 
 Both scenarios (`urban`, `highway`) matter — several findings only appear when
@@ -110,8 +111,11 @@ The runner checks results against the expectations recorded in
 ## State
 
 Done: Module 1 (mobility + multi-metric CH election), Module 2 (trust), Module
-3a (Scyther), Module 3b (crypto cost), Module 5 (priority). Both scenarios,
-crypto charged, regression gate passing.
+3a (Scyther), Module 3b (crypto cost), Module 5 (priority), and the 802.11p
+path-loss robustness check (`docs/radio.md` — all six headline findings hold
+under log-distance path loss; the urban premium on priority's cost was a knee
+artifact and is re-scoped). Both scenarios, crypto charged, regression gate
+passing.
 
 Open, and **both need a decision from the user rather than more code**:
 
@@ -119,8 +123,9 @@ Open, and **both need a decision from the user rather than more code**:
   piece. A 2026 paper already does RF-style ML on the same public dataset, and
   VeReMi contains none of the Layer-A attacks this project defends against. The
   candidate to cut. See `docs/related_work.md`.
-- **Publication blockers** — an 802.11p path-loss robustness check, and real
-  SUMO traces. Neither blocks the BTP; both block a journal submission.
+- **Publication blocker** — real SUMO traces (the remaining one; the 802.11p
+  robustness check is done). Does not block the BTP; blocks a journal
+  submission.
 
 Also open: Figs. 11–15 regeneration, and the write-up.
 
@@ -149,3 +154,9 @@ read it before starting anything substantial.
 - **Scyther found a real cross-protocol attack** between the member-reading and
   fused-aggregate MACs, invisible in the simulator where message types are
   Python fields. Fixed with domain-separation tags. (`docs/module3.md`)
+- **The findings are not artifacts of the Heinzelman radio.** All six survive
+  log-distance path loss with no knee; the free ride and the compute-vs-radio
+  ratio get *stronger*, and the one casualty is an explanation — the urban
+  premium on priority's cost was the d⁴ knee. The highway tables barely move
+  because highway heads sit inside d0, where the models coincide.
+  (`docs/radio.md`)

@@ -110,6 +110,12 @@ plainly. Two remedies, both belonging to Module 4:
 It also means a security defence cannot be validated on energy metrics alone —
 an attacker wins on energy by construction.
 
+The free ride is not an artifact of the base paper's radio model — the
+opposite: under log-distance path loss it grows to **2.21–3.02×**
+(`docs/radio.md`), because what demotion spares the attacker is the head
+role, whose cost is dominated by distance-independent receive + aggregation,
+while everything honest nodes pay in radio gets cheaper.
+
 ## Reproduce
 
 ```bash

@@ -190,7 +190,7 @@ def defence_sweep(args):
     return out
 
 
-def coverage_latency(args):
+def coverage_latency(args, **cfg_kw):
     """Why a bypass is needed at all: coverage and emergency latency oppose.
 
     Runs every protocol with the reservation DISABLED (emergency_slots = 0), so
@@ -222,7 +222,7 @@ def coverage_latency(args):
     for name, cls in PROTOCOLS.items():
         rows = []
         for s in range(args.seeds):
-            cfg = base_cfg(args, emergency_slots=0, attacker_frac=0.0)
+            cfg = base_cfg(args, emergency_slots=0, attacker_frac=0.0, **cfg_kw)
             net = Network(cfg, np.random.default_rng(s))
             from traffic import TrafficModel
             net.traffic = TrafficModel(cfg, np.random.default_rng(s + 999),

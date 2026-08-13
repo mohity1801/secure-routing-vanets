@@ -1,0 +1,112 @@
+{
+  "heinzelman": {
+    "LEACH": {
+      "orphan_pct": 39.33086885548743,
+      "norm_delay": 6.90227216423317,
+      "ems_miss": 0.5968490834348633,
+      "mean_clusters": 6.597554492291334
+    },
+    "LEACH-C": {
+      "orphan_pct": 5.826521031792976,
+      "norm_delay": 9.175150611778452,
+      "ems_miss": 0.858949944385401,
+      "mean_clusters": 9.315876068376069
+    },
+    "HEED": {
+      "orphan_pct": 47.61128456569096,
+      "norm_delay": 4.266072229797721,
+      "ems_miss": 0.27843845289680624,
+      "mean_clusters": 9.691721132897603
+    },
+    "PSO": {
+      "orphan_pct": 5.3177275579640995,
+      "norm_delay": 9.057073807421743,
+      "ems_miss": 0.8471814028185761,
+      "mean_clusters": 9.045109211775879
+    },
+    "GA": {
+      "orphan_pct": 9.122603790542948,
+      "norm_delay": 8.593175373873864,
+      "ems_miss": 0.7589337511984112,
+      "mean_clusters": 8.792183908045978
+    },
+    "CSGD-NET": {
+      "orphan_pct": 21.38012369549786,
+      "norm_delay": 7.444122475488498,
+      "ems_miss": 0.6465115375268478,
+      "mean_clusters": 9.578968253968254
+    },
+    "CHIRP": {
+      "orphan_pct": 3.2593027554795273,
+      "norm_delay": 9.693733255649368,
+      "ems_miss": 0.8814354631051545,
+      "mean_clusters": 9.457734789365224
+    },
+    "_spearman": {
+      "rho": -0.9642857142857145,
+      "p": 0.0004541491691941692
+    }
+  },
+  "logdistance": {
+    "LEACH": {
+      "orphan_pct": 28.52611116220531,
+      "norm_delay": 6.957570455959483,
+      "ems_miss": 0.5838053656291814,
+      "mean_clusters": 7.911111111111111
+    },
+    "LEACH-C": {
+      "orphan_pct": 6.250609013979804,
+      "norm_delay": 9.21242862749371,
+      "ems_miss": 0.8310211453768604,
+      "mean_clusters": 9.182654320987654
+    },
+    "HEED": {
+      "orphan_pct": 50.00215665868737,
+      "norm_delay": 4.321014007810089,
+      "ems_miss": 0.3069609629221311,
+      "mean_clusters": 9.723015873015873
+    },
+    "PSO": {
+      "orphan_pct": 5.896375833918174,
+      "norm_delay": 9.225869620488387,
+      "ems_miss": 0.8266975505527913,
+      "mean_clusters": 9.17754515599343
+    },
+    "GA": {
+      "orphan_pct": 9.525895412548532,
+      "norm_delay": 8.764277000611367,
+      "ems_miss": 0.7897090500671063,
+      "mean_clusters": 9.17400412087912
+    },
+    "CSGD-NET": {
+      "orphan_pct": 21.73488087456514,
+      "norm_delay": 7.483617427670967,
+      "ems_miss": 0.7002164108149093,
+      "mean_clusters": 9.761528326745719
+    },
+    "CHIRP": {
+      "orphan_pct": 3.9335903368429577,
+      "norm_delay": 9.673717744519442,
+      "ems_miss": 0.8907026398189969,
+      "mean_clusters": 9.646486229819564
+    },
+    "_spearman": {
+      "rho": -0.9642857142857145,
+      "p": 0.0004541491691941692
+    }
+  },
+  "_check": {
+    "committed": "results/priority_coverage_urban.json",
+    "status": "OK",
+    "n_identical": 28,
+    "n_mismatch": 0
+  },
+  "_meta": {
+    "experiment": "coverage",
+    "scenario": "urban",
+    "seeds": 6,
+    "rounds": 40,
+    "path_loss_exp": 3.0,
+    "generated_by": "src/run_radio.py"
+  }
+}
