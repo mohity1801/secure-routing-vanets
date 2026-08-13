@@ -38,18 +38,28 @@ require a MAC and queueing model this simulator does not have.
 
 ## Finding 1 — coverage and latency are in direct opposition
 
-6 seeds, 5 % EMS, before any bypass exists. Every reading is aggregated.
+6 seeds, 5 % EMS, reservation disabled (`emergency_slots = 0`), so every reading
+is aggregated and class-2 traffic gets no special treatment.
 
 | | **urban** | | | **highway** | | |
 |---|---|---|---|---|---|---|
 | protocol | orphan % | delay | dl-miss | orphan % | delay | dl-miss |
-| HEED | 46.8 | 4.22 | **0.273** | 48.0 | 5.24 | **0.387** |
-| LEACH | 38.5 | 6.91 | 0.602 | 31.2 | 8.15 | 0.609 |
-| CSGD-NET | 19.3 | 7.70 | 0.687 | 10.1 | 10.14 | 0.820 |
-| GA | 9.2 | 8.64 | 0.782 | 1.1 | 10.44 | 0.898 |
-| PSO | 6.0 | 9.08 | 0.813 | 0.2 | 10.43 | 0.924 |
-| LEACH-C | 5.9 | 9.16 | 0.888 | 1.1 | 10.59 | 0.953 |
-| **CHIRP** | **3.1** | **9.68** | 0.874 | **0.1** | 10.23 | **0.958** |
+| HEED | 47.6 | 4.27 | **0.278** | 48.1 | 5.24 | **0.372** |
+| LEACH | 39.3 | 6.90 | 0.597 | 30.8 | 8.15 | 0.606 |
+| CSGD-NET | 21.4 | 7.44 | 0.647 | 10.6 | 10.13 | 0.831 |
+| GA | 9.1 | 8.59 | 0.759 | 1.1 | 10.42 | 0.889 |
+| PSO | 5.3 | 9.06 | 0.847 | 0.3 | 10.46 | 0.934 |
+| LEACH-C | 5.8 | 9.18 | 0.859 | 1.1 | 10.56 | 0.943 |
+| **CHIRP** | **3.3** | **9.69** | 0.881 | **0.2** | 10.26 | **0.957** |
+
+> **Numbers refreshed when this experiment was promoted to a committed runner**
+> (`--coverage-latency`). The first version of this table was produced by an
+> inline script *before* Module 3b measured the crypto overhead, so it ran with
+> `mac_bits = 0`. The aggregate MAC is now charged on every fused packet, which
+> drains heads marginally faster, shifts when nodes die, and therefore moves
+> orphan rates and cluster sizes by a point or two — CSGD-NET's urban orphan
+> rate 19.3 → 21.4 is the largest single move. **The relationship is unchanged**
+> and no conclusion depends on the difference.
 
 Deadline-miss tracks orphan rate almost perfectly inversely, in both scenarios
 and across seven protocols. Orphans skip fusion entirely, so they are the
@@ -57,14 +67,14 @@ and across seven protocols. Orphans skip fusion entirely, so they are the
 few of them. HEED, which strands nearly half the network, has the best emergency
 latency in the comparison precisely because it is the worst at clustering.
 
-**Module 1's headline win is a latency loss.** CHIRP cut the urban orphan rate
-by 82.7 % and the highway rate to 0.1 %, and it has the worst or near-worst
-deadline-miss in both. This is the fourth negative result in the project and it
+**Module 1's headline win is a latency loss.** CHIRP strands the fewest nodes of
+any protocol here — 3.3 % urban, 0.2 % highway — and it has the worst or
+near-worst deadline-miss in both. This is the fourth negative result in the project and it
 is worth stating plainly: the entire clustering literature optimises coverage
 without measuring what coverage costs deadline-bound traffic, because none of it
 models a traffic class that has a deadline.
 
-The effect is sharper on the highway (0.958 vs urban's 0.874) because highway
+The effect is sharper on the highway (0.957 vs urban's 0.881) because highway
 CHIRP orphans almost nothing at all — there is no accidental fast path left.
 
 ## Finding 2 — the energy price of priority
@@ -332,11 +342,15 @@ here, because doing so would move every Module 1 and Module 2 baseline.
 
 ```bash
 for s in urban highway; do
-  python3 src/run_priority.py --scenario $s --seeds 12 --bypass-cost
-  python3 src/run_priority.py --scenario $s --seeds 12
-  python3 src/run_priority.py --scenario $s --seeds 12 --sweep-greed
+  python3 src/run_priority.py --scenario $s --seeds 6  --rounds 40 --coverage-latency  # finding 1
+  python3 src/run_priority.py --scenario $s --seeds 12 --bypass-cost                   # finding 2
+  python3 src/run_priority.py --scenario $s --seeds 12                                 # findings 3, 4
+  python3 src/run_priority.py --scenario $s --seeds 12 --sweep-greed                    # finding 5
 done
 ```
+
+Every table in this document is now produced by a committed runner. Outputs land
+in `results/priority_{coverage,bypass,defence,greed}_{scenario}.json`.
 
 Every result above holds `ems_frac = 0` as a regression invariant: with no EMS
 vehicles and zero crypto overhead, all Module 1 and Module 2 results are

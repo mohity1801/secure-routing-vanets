@@ -1,0 +1,35 @@
+{
+  "no crypto, no bypass": {
+    "mJ_per_reading": 0.7269390276271082,
+    "sig_bits": 0,
+    "mac_bits": 0,
+    "emergency_slots": 0
+  },
+  "+ aggregate MAC": {
+    "mJ_per_reading": 0.7288023315942667,
+    "sig_bits": 0,
+    "mac_bits": 128,
+    "emergency_slots": 0,
+    "delta_pct": 0.2563219054616983,
+    "cumulative_pct": 0.2563219054616983,
+    "p": 0.004180908203125
+  },
+  "+ bypass, no signature": {
+    "mJ_per_reading": 0.7325596413799237,
+    "sig_bits": 0,
+    "mac_bits": 128,
+    "emergency_slots": 1,
+    "delta_pct": 0.5155457965451138,
+    "cumulative_pct": 0.7731891588160344,
+    "p": 0.001678466796875
+  },
+  "+ per-message signature": {
+    "mJ_per_reading": 0.7325454285814346,
+    "sig_bits": 576,
+    "mac_bits": 128,
+    "emergency_slots": 1,
+    "delta_pct": -0.0019401558161713517,
+    "cumulative_pct": 0.7712340019254471,
+    "p": 0.93988037109375
+  }
+}

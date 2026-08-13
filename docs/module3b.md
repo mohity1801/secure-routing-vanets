@@ -58,7 +58,13 @@ optimising the wrong direction.
 ## The transmission cost is negligible
 
 Decomposed, 16 seeds, CHIRP, 5 % EMS, mJ per delivered reading. Each row adds
-one thing to the row above; p from a paired Wilcoxon test across seeds.
+one thing to the row above; p from a paired Wilcoxon test across seeds — paired
+because each seed gives the same mobility trace in both arms.
+
+```bash
+python3 src/run_priority.py --scenario urban   --seeds 16 --crypto-decomp
+python3 src/run_priority.py --scenario highway --seeds 16 --crypto-decomp
+```
 
 **Urban**
 
