@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 690" font-family="Helvetica,Arial,sans-serif">
+<defs>
+<marker id="a" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 z" fill="#334155"/></marker>
+<marker id="at" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 z" fill="#0d7377"/></marker>
+<marker id="ae" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 z" fill="#c2410c"/></marker>
+<marker id="ag" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 z" fill="#64748b"/></marker>
+</defs>
+
+<text x="510" y="26" text-anchor="middle" font-size="17" font-weight="700" fill="#1a3a5c">CHIRP — System Architecture</text>
+<text x="510" y="45" text-anchor="middle" font-size="11" fill="#64748b">two traffic classes, two authentication paths; member → CH → RSU is the entire topology (no multi-hop)</text>
+
+<!-- TIER LABELS -->
+<rect x="8" y="62" width="120" height="52" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/>
+<text x="68" y="82" text-anchor="middle" font-size="11" font-weight="700" fill="#475569">TIER 0</text>
+<text x="68" y="98" text-anchor="middle" font-size="10" fill="#64748b">offline / one-off</text>
+
+<rect x="8" y="128" width="120" height="72" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/>
+<text x="68" y="152" text-anchor="middle" font-size="11" font-weight="700" fill="#475569">TIER 1</text>
+<text x="68" y="168" text-anchor="middle" font-size="10" fill="#64748b">infrastructure</text>
+<text x="68" y="182" text-anchor="middle" font-size="10" fill="#64748b">(RSU / sink)</text>
+
+<rect x="8" y="286" width="120" height="86" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/>
+<text x="68" y="312" text-anchor="middle" font-size="11" font-weight="700" fill="#475569">TIER 2</text>
+<text x="68" y="328" text-anchor="middle" font-size="10" fill="#64748b">cluster heads</text>
+<text x="68" y="344" text-anchor="middle" font-size="10" fill="#64748b">elected each round</text>
+<text x="68" y="360" text-anchor="middle" font-size="10" fill="#64748b">by Cuckoo Search</text>
+
+<rect x="8" y="470" width="120" height="86" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/>
+<text x="68" y="496" text-anchor="middle" font-size="11" font-weight="700" fill="#475569">TIER 3</text>
+<text x="68" y="512" text-anchor="middle" font-size="10" fill="#64748b">vehicles / OBUs</text>
+<text x="68" y="528" text-anchor="middle" font-size="10" fill="#64748b">100 nodes</text>
+<text x="68" y="544" text-anchor="middle" font-size="10" fill="#64748b">22 readings/round</text>
+
+<!-- TA -->
+<rect x="150" y="62" width="200" height="52" rx="5" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.6"/>
+<text x="250" y="84" text-anchor="middle" font-size="12.5" font-weight="700" fill="#5b21b6">Trusted Authority (TA)</text>
+<text x="250" y="102" text-anchor="middle" font-size="9.5" fill="#6d28d9">issues pseudonym certificates · holds identity escrow</text>
+
+<!-- registration arrow -->
+<path d="M350,88 L560,88" stroke="#7c3aed" stroke-width="1.6" fill="none" marker-end="url(#a)" stroke-dasharray="5,3"/>
+<text x="455" y="80" text-anchor="middle" font-size="9.5" fill="#5b21b6" font-weight="600">offline registration, once</text>
+<text x="455" y="105" text-anchor="middle" font-size="9" fill="#6d28d9">1. V→TA {TagCertReq, V, pid, EMS, nv}k(V,TA)</text>
+<text x="455" y="117" text-anchor="middle" font-size="9" fill="#6d28d9">2. TA→V {TagCert, pid, EMS, V, nv}sk(TA)  ← 122 B cert</text>
+
+<rect x="570" y="62" width="260" height="52" rx="5" fill="#faf5ff" stroke="#a78bfa" stroke-dasharray="4,3"/>
+<text x="700" y="82" text-anchor="middle" font-size="10.5" font-weight="700" fill="#5b21b6">EMS role attribute provisioned</text>
+<text x="700" y="99" text-anchor="middle" font-size="9" fill="#6d28d9">requires k(V,TA), installed at commissioning —</text>
+<text x="700" y="110" text-anchor="middle" font-size="9" fill="#6d28d9">a vehicle without it cannot obtain an EMS cert</text>
+
+<!-- RSU -->
+<rect x="380" y="132" width="300" height="64" rx="5" fill="#dbeafe" stroke="#1a3a5c" stroke-width="1.8"/>
+<text x="530" y="155" text-anchor="middle" font-size="13" font-weight="700" fill="#1a3a5c">RSU  (roadside unit / sink)</text>
+<text x="530" y="172" text-anchor="middle" font-size="9.5" fill="#1e40af">urban: 9 in a grid · highway: 5 in a line</text>
+<text x="530" y="187" text-anchor="middle" font-size="9.5" fill="#1e40af">verifies aggregate MACs and class-2 signatures · anchors global trust</text>
+
+<!-- what RSU can authenticate -->
+<rect x="700" y="132" width="312" height="64" rx="5" fill="#fff7ed" stroke="#c2410c" stroke-dasharray="3,3"/>
+<text x="856" y="151" text-anchor="middle" font-size="10" font-weight="700" fill="#9a3412">what the RSU can actually authenticate</text>
+<text x="856" y="167" text-anchor="middle" font-size="9" fill="#7c2d12">fused packet → the HEAD only  (fusion loses provenance)</text>
+<text x="856" y="181" text-anchor="middle" font-size="9" fill="#7c2d12">class-2 message → the VEHICLE, end-to-end</text>
+<line x1="700" y1="164" x2="682" y2="164" stroke="#c2410c" stroke-width="1.2"/>
+
+<!-- CLUSTER HEAD BOX -->
+<rect x="290" y="286" width="480" height="150" rx="6" fill="#f0fdfa" stroke="#0d7377" stroke-width="1.8"/>
+<text x="530" y="308" text-anchor="middle" font-size="13" font-weight="700" fill="#0d7377">CLUSTER HEAD  (10 % of nodes, re-elected every round)</text>
+
+<rect x="306" y="320" width="216" height="100" rx="4" fill="#ffffff" stroke="#0d7377"/>
+<text x="414" y="338" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0d7377">class-0 path — FUSE</text>
+<text x="414" y="354" text-anchor="middle" font-size="9" fill="#334155">receive n readings (22 frames)</text>
+<text x="414" y="368" text-anchor="middle" font-size="9" fill="#334155">aggregate n+1 → ONE packet</text>
+<text x="414" y="382" text-anchor="middle" font-size="9" fill="#334155">attach aggregate MAC (128 b)</text>
+<text x="414" y="398" text-anchor="middle" font-size="9" font-weight="600" fill="#0d7377">energy saving lives here</text>
+<text x="414" y="412" text-anchor="middle" font-size="9" font-weight="600" fill="#b91c1c">delay = cluster size + 1 slots</text>
+
+<rect x="538" y="320" width="216" height="100" rx="4" fill="#ffffff" stroke="#c2410c"/>
+<text x="646" y="338" text-anchor="middle" font-size="10.5" font-weight="700" fill="#c2410c">class-2 path — BYPASS</text>
+<text x="646" y="354" text-anchor="middle" font-size="9" fill="#334155">ADMISSION DECISION (see D5)</text>
+<text x="646" y="368" text-anchor="middle" font-size="9" fill="#334155">reserved slot: 1/frame = 22/round</text>
+<text x="646" y="382" text-anchor="middle" font-size="9" fill="#334155">forward VERBATIM, never fused</text>
+<text x="646" y="398" text-anchor="middle" font-size="9" font-weight="600" fill="#c2410c">signature survives to RSU</text>
+<text x="646" y="412" text-anchor="middle" font-size="9" font-weight="600" fill="#15803d">delay = 2 slots, constant</text>
+
+<!-- uplinks -->
+<path d="M414,320 L414,200" stroke="#0d7377" stroke-width="2" fill="none" marker-end="url(#at)"/>
+<text x="360" y="240" font-size="9" fill="#0d7377" font-weight="600">1 fused packet</text>
+<text x="360" y="252" font-size="9" fill="#0d7377">+ mac_bits 128</text>
+<text x="360" y="264" font-size="9" fill="#0d7377">× 22 frames</text>
+
+<path d="M646,320 L646,200" stroke="#c2410c" stroke-width="2" fill="none" marker-end="url(#ae)"/>
+<text x="656" y="240" font-size="9" fill="#c2410c" font-weight="600">n verbatim messages</text>
+<text x="656" y="252" font-size="9" fill="#c2410c">each + sig_bits 576</text>
+<text x="656" y="264" font-size="9" fill="#c2410c">(64 B ECDSA + 8 B digest)</text>
+
+<!-- VEHICLES -->
+<rect x="150" y="470" width="150" height="86" rx="5" fill="#ecfeff" stroke="#0e7490" stroke-width="1.5"/>
+<text x="225" y="491" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0e7490">ordinary vehicle</text>
+<text x="225" y="509" text-anchor="middle" font-size="9" fill="#334155">22 class-0 readings/rd</text>
+<text x="225" y="523" text-anchor="middle" font-size="9" fill="#334155">joins NEAREST head</text>
+<text x="225" y="537" text-anchor="middle" font-size="9" fill="#334155">within tx_range</text>
+<text x="225" y="550" text-anchor="middle" font-size="8.5" fill="#64748b">watchdogs its head</text>
+
+<rect x="330" y="470" width="170" height="86" rx="5" fill="#fff7ed" stroke="#c2410c" stroke-width="1.8"/>
+<text x="415" y="491" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c2410c">EMS vehicle (5 %)</text>
+<text x="415" y="509" text-anchor="middle" font-size="9" fill="#334155">4 of its 22 readings</text>
+<text x="415" y="523" text-anchor="middle" font-size="9" fill="#334155">marked class-2</text>
+<text x="415" y="537" text-anchor="middle" font-size="9" fill="#334155">signs + attaches cert digest</text>
+<text x="415" y="550" text-anchor="middle" font-size="8.5" font-weight="600" fill="#c2410c">holds TA-issued EMS role</text>
+
+<rect x="530" y="470" width="170" height="86" rx="5" fill="#fef2f2" stroke="#b91c1c" stroke-width="1.8"/>
+<text x="615" y="491" text-anchor="middle" font-size="11.5" font-weight="700" fill="#b91c1c">false-priority attacker</text>
+<text x="615" y="509" text-anchor="middle" font-size="9" fill="#334155">asserts class-2 on ALL 22</text>
+<text x="615" y="523" text-anchor="middle" font-size="9" fill="#334155">drops nothing — attacks</text>
+<text x="615" y="537" text-anchor="middle" font-size="9" fill="#334155">a RESOURCE, not packets</text>
+<text x="615" y="550" text-anchor="middle" font-size="8.5" font-weight="600" fill="#b91c1c">NO EMS role attribute</text>
+
+<rect x="730" y="470" width="160" height="86" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="810" y="491" text-anchor="middle" font-size="11.5" font-weight="700" fill="#475569">ORPHAN</text>
+<text x="810" y="509" text-anchor="middle" font-size="9" fill="#334155">no head in range</text>
+<text x="810" y="523" text-anchor="middle" font-size="9" fill="#334155">→ direct to RSU</text>
+<text x="810" y="538" text-anchor="middle" font-size="9" font-weight="600" fill="#15803d">delay = 1 slot (fastest!)</text>
+<text x="810" y="551" text-anchor="middle" font-size="8.5" fill="#b91c1c">but pays its own d² / d⁴</text>
+
+<!-- member uplinks -->
+<path d="M225,470 L360,436" stroke="#0d7377" stroke-width="1.6" fill="none" marker-end="url(#at)"/>
+<path d="M415,470 L560,436" stroke="#c2410c" stroke-width="1.6" fill="none" marker-end="url(#ae)"/>
+<path d="M615,470 L660,436" stroke="#b91c1c" stroke-width="1.6" fill="none" marker-end="url(#a)" stroke-dasharray="4,2"/>
+<path d="M810,470 C880,420 880,260 700,180" stroke="#64748b" stroke-width="1.6" fill="none" marker-end="url(#ag)" stroke-dasharray="5,3"/>
+<text x="905" y="330" font-size="9" fill="#475569" font-weight="600">orphan bypasses</text>
+<text x="905" y="343" font-size="9" fill="#475569">the cluster entirely</text>
+
+<!-- TDMA note -->
+<rect x="150" y="580" width="740" height="42" rx="4" fill="#fffbeb" stroke="#b8860b"/>
+<text x="163" y="598" font-size="10" font-weight="700" fill="#78350f">TDMA within a cluster · 22 frames per round · collision-free by construction.</text>
+<text x="163" y="613" font-size="9.5" fill="#78350f">No channel model: transmissions never collide, so no throughput/jitter claims. Slot exhaustion IS modelled — the schedule is a genuinely finite resource.</text>
+
+<rect x="150" y="632" width="740" height="42" rx="4" fill="#f0fdf4" stroke="#15803d"/>
+<text x="163" y="650" font-size="10" font-weight="700" fill="#14532d">THE STRUCTURAL CONFLICT this architecture exists to resolve:</text>
+<text x="163" y="665" font-size="9.5" fill="#14532d">Fusion is the energy saving, and fusion forces every reading to wait for the whole frame. An ambulance cannot wait. The bypass resolves it — and becomes an attack surface.</text>
+</svg>

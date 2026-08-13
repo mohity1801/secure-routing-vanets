@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 700" font-family="Helvetica,Arial,sans-serif">
+<defs>
+<marker id="m1" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#475569"/></marker>
+<marker id="m2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#c2410c"/></marker>
+</defs>
+<text x="510" y="26" text-anchor="middle" font-size="17" font-weight="700" fill="#1a3a5c">Codebase Map and Information Flow</text>
+<text x="510" y="45" text-anchor="middle" font-size="11" fill="#64748b">3,867 lines of Python across 24 files, plus 5 Scyther models · legend: ■ model core  ■ protocols  ■ security  ■ drivers  ■ verification</text>
+
+<!-- config -->
+<rect x="404" y="62" width="212" height="40" rx="5" fill="#e2e8f0" stroke="#334155" stroke-width="1.8"/>
+<text x="510" y="80" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1a3a5c">src/config.py — 225 lines</text>
+<text x="510" y="95" text-anchor="middle" font-size="8.5" fill="#475569">one Config dataclass · ~70 fields · NO project imports (a leaf)</text>
+<path d="M510,102 L510,120" stroke="#475569" stroke-width="1.8" marker-end="url(#m1)"/>
+<text x="620" y="96" font-size="8.5" font-style="italic" fill="#64748b">every default carries a comment saying WHY —</text>
+<text x="620" y="107" font-size="8.5" font-style="italic" fill="#64748b">including the ones deliberately disabled (w_survival=0 …)</text>
+
+<!-- model core row -->
+<rect x="60" y="124" width="900" height="112" rx="6" fill="#f0f9ff" stroke="#0369a1" stroke-width="1.6"/>
+<text x="74" y="143" font-size="11.5" font-weight="700" fill="#0369a1">MODEL CORE</text>
+
+<rect x="74" y="150" width="180" height="76" rx="4" fill="#fff" stroke="#0369a1" stroke-width="2"/>
+<text x="164" y="168" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0369a1">network.py · 445</text>
+<text x="164" y="184" text-anchor="middle" font-size="8.5" fill="#334155">run_setup_phase()</text>
+<text x="164" y="196" text-anchor="middle" font-size="8.5" fill="#334155">run_steady_state()</text>
+<text x="164" y="208" text-anchor="middle" font-size="8.5" font-weight="700" fill="#c2410c">_priority_phase()</text>
+<text x="164" y="221" text-anchor="middle" font-size="8" font-style="italic" fill="#64748b">assign_members, _place_rsus</text>
+
+<rect x="264" y="150" width="150" height="76" rx="4" fill="#fff" stroke="#0369a1"/>
+<text x="339" y="168" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0369a1">energy.py · 28</text>
+<text x="339" y="185" text-anchor="middle" font-size="8.5" fill="#334155">tx_energy · rx_energy</text>
+<text x="339" y="197" text-anchor="middle" font-size="8.5" fill="#334155">aggregation_energy</text>
+<text x="339" y="212" text-anchor="middle" font-size="8" font-style="italic" fill="#64748b">Eqs. (9)–(11) verbatim —</text>
+<text x="339" y="222" text-anchor="middle" font-size="8" font-style="italic" fill="#64748b">every protocol charged identically</text>
+
+<rect x="424" y="150" width="150" height="76" rx="4" fill="#fff" stroke="#0369a1"/>
+<text x="499" y="168" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0369a1">mobility.py · 163</text>
+<text x="499" y="185" text-anchor="middle" font-size="8.5" fill="#334155">StaticMobility</text>
+<text x="499" y="197" text-anchor="middle" font-size="8.5" fill="#334155">HighwayMobility</text>
+<text x="499" y="209" text-anchor="middle" font-size="8.5" fill="#334155">UrbanGridMobility</text>
+<text x="499" y="222" text-anchor="middle" font-size="8" font-style="italic" fill="#b91c1c">synthetic — not SUMO</text>
+
+<rect x="584" y="150" width="150" height="76" rx="4" fill="#fff" stroke="#0369a1"/>
+<text x="659" y="168" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0369a1">metrics.py · 111</text>
+<text x="659" y="185" text-anchor="middle" font-size="8.5" fill="#334155">link_expiration_time</text>
+<text x="659" y="197" text-anchor="middle" font-size="8.5" fill="#334155">cluster_balance</text>
+<text x="659" y="209" text-anchor="middle" font-size="8.5" font-weight="700" fill="#c2410c">deadline_miss</text>
+<text x="659" y="221" text-anchor="middle" font-size="8.5" fill="#334155">weighted_percentile</text>
+
+<rect x="744" y="150" width="200" height="76" rx="4" fill="#fef2f2" stroke="#b91c1c"/>
+<text x="844" y="168" text-anchor="middle" font-size="10.5" font-weight="700" fill="#b91c1c">SECURITY</text>
+<text x="844" y="185" text-anchor="middle" font-size="8.5" fill="#334155">traffic.py 128 — EMS, demand, token bucket</text>
+<text x="844" y="199" text-anchor="middle" font-size="8.5" fill="#334155">trust.py 183 — Beta, credibility, observe_priority</text>
+<text x="844" y="213" text-anchor="middle" font-size="8.5" fill="#334155">attacks.py 113 — 6 behaviours incl. falsepriority</text>
+
+<path d="M510,236 L510,254" stroke="#475569" stroke-width="1.8" marker-end="url(#m1)"/>
+
+<!-- protocols -->
+<rect x="60" y="258" width="900" height="86" rx="6" fill="#f0fdfa" stroke="#0d7377" stroke-width="1.6"/>
+<text x="74" y="277" font-size="11.5" font-weight="700" fill="#0d7377">PROTOCOLS  src/protocols/</text>
+<rect x="74" y="284" width="150" height="50" rx="4" fill="#fff" stroke="#0d7377"/>
+<text x="149" y="302" text-anchor="middle" font-size="10" font-weight="700" fill="#0d7377">csgd_net.py · 142</text>
+<text x="149" y="317" text-anchor="middle" font-size="8.5" fill="#334155">levy() Mantegna · Eq. 9</text>
+<text x="149" y="329" text-anchor="middle" font-size="8" font-style="italic" fill="#64748b">the base paper, faithful</text>
+
+<path d="M224,309 L268,309" stroke="#0d7377" stroke-width="2.2" marker-end="url(#m1)"/>
+<text x="246" y="303" text-anchor="middle" font-size="8" fill="#0d7377">subclasses</text>
+
+<rect x="270" y="284" width="180" height="50" rx="4" fill="#ecfeff" stroke="#0d7377" stroke-width="2.2"/>
+<text x="360" y="302" text-anchor="middle" font-size="10" font-weight="700" fill="#0d7377">chirp.py · 226  ← OURS</text>
+<text x="360" y="316" text-anchor="middle" font-size="8.5" fill="#334155">overrides ONLY fitness/_pool/select_ch</text>
+<text x="360" y="329" text-anchor="middle" font-size="8" font-weight="700" fill="#15803d">inherits the Cuckoo engine byte-for-byte</text>
+
+<rect x="466" y="284" width="478" height="50" rx="4" fill="#fff" stroke="#0d7377"/>
+<text x="705" y="302" text-anchor="middle" font-size="10" font-weight="700" fill="#0d7377">baselines — leach.py 76 · heed.py 65 · swarm.py 130 (PSO + GA)</text>
+<text x="705" y="318" text-anchor="middle" font-size="8.5" fill="#334155">swarm.py's own docstring notes: the Latiff cost ALREADY contains the intra-cluster term Eq. 9 omits —</text>
+<text x="705" y="330" text-anchor="middle" font-size="8.5" fill="#334155">which is why PSO and GA hold more energy than CSGD-NET late in the run.</text>
+
+<path d="M510,344 L510,362" stroke="#475569" stroke-width="1.8" marker-end="url(#m1)"/>
+
+<!-- drivers -->
+<rect x="60" y="366" width="900" height="70" rx="6" fill="#fffbeb" stroke="#b8860b" stroke-width="1.6"/>
+<text x="74" y="385" font-size="11.5" font-weight="700" fill="#78350f">EXPERIMENT DRIVERS</text>
+<rect x="74" y="392" width="200" height="36" rx="4" fill="#fff" stroke="#b8860b"/>
+<text x="174" y="408" text-anchor="middle" font-size="9.5" font-weight="700" fill="#78350f">run_baseline.py · 124</text>
+<text x="174" y="421" text-anchor="middle" font-size="8" fill="#334155">Table 4 reproduction, 6 protocols</text>
+<rect x="284" y="392" width="200" height="36" rx="4" fill="#fff" stroke="#b8860b"/>
+<text x="384" y="408" text-anchor="middle" font-size="9.5" font-weight="700" fill="#78350f">run_module1.py · 202</text>
+<text x="384" y="421" text-anchor="middle" font-size="8" fill="#334155">CH election · defines SCENARIOS</text>
+<rect x="494" y="392" width="200" height="36" rx="4" fill="#fff" stroke="#b8860b"/>
+<text x="594" y="408" text-anchor="middle" font-size="9.5" font-weight="700" fill="#78350f">run_module2.py · 188</text>
+<text x="594" y="421" text-anchor="middle" font-size="8" fill="#334155">trust under attack · --ablate</text>
+<rect x="704" y="392" width="240" height="36" rx="4" fill="#fff" stroke="#b8860b" stroke-width="2"/>
+<text x="824" y="408" text-anchor="middle" font-size="9.5" font-weight="700" fill="#78350f">run_priority.py · 226</text>
+<text x="824" y="421" text-anchor="middle" font-size="8" fill="#334155">--bypass-cost · defence sweep · --sweep-greed</text>
+
+<path d="M510,436 L510,452" stroke="#475569" stroke-width="1.8" marker-end="url(#m1)"/>
+<rect x="380" y="454" width="260" height="34" rx="5" fill="#e0e7ff" stroke="#4338ca" stroke-width="1.7"/>
+<text x="510" y="475" text-anchor="middle" font-size="11.5" font-weight="700" fill="#312e81">results/*.json  (13 files)</text>
+<path d="M640,471 L700,471" stroke="#475569" stroke-width="1.8" marker-end="url(#m1)"/>
+<rect x="704" y="454" width="240" height="34" rx="5" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/>
+<text x="824" y="470" text-anchor="middle" font-size="10.5" font-weight="700" fill="#334155">docs/*.md  (10 files)</text>
+<text x="824" y="482" text-anchor="middle" font-size="8" font-style="italic" fill="#64748b">written by hand from those results</text>
+
+<!-- verification column -->
+<rect x="60" y="500" width="440" height="126" rx="6" fill="#f0fdf4" stroke="#15803d" stroke-width="1.6"/>
+<text x="74" y="519" font-size="11.5" font-weight="700" fill="#14532d">VERIFICATION &amp; TOOLING</text>
+<text x="74" y="538" font-size="9" fill="#334155"><tspan font-weight="700">regression_gate.py · 147</tspan> — fingerprints 55 configs, SHA-256 over float64 bytes</text>
+<text x="74" y="554" font-size="9" fill="#334155"><tspan font-weight="700">verify_table4.py · 153</tspan> — the 3-argument refutation of Table 4</text>
+<text x="74" y="570" font-size="9" fill="#334155"><tspan font-weight="700">crypto_bench.py · 247</tspan> — ECDSA/HMAC sizes + timings + energy sweep</text>
+<text x="74" y="586" font-size="9" fill="#334155"><tspan font-weight="700">verify.py 197 · verify_fit.py 74</tspan> — original audit, frame-count fit</text>
+<text x="74" y="602" font-size="9" fill="#334155"><tspan font-weight="700">diagnose_fnd.py · 106</tspan> — identity/history of the first node to die</text>
+<text x="74" y="619" font-size="8.5" font-style="italic" fill="#166534">These are why the project's claims are checkable rather than asserted.</text>
+
+<rect x="516" y="500" width="444" height="126" rx="6" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.6"/>
+<text x="530" y="519" font-size="11.5" font-weight="700" fill="#5b21b6">FORMAL — formal/  (independent of the simulator)</text>
+<text x="530" y="538" font-size="9" fill="#334155">register.spdl · priority.spdl · priority-assert.spdl</text>
+<text x="530" y="553" font-size="9" fill="#334155">aggregate.spdl · fusion-limit.spdl</text>
+<text x="530" y="571" font-size="9" fill="#334155"><tspan font-weight="700">run_scyther.py · 168</tspan> — runs all five, compares against the</text>
+<text x="530" y="584" font-size="9" fill="#334155">expected set in docs/module3.md, exits non-zero if anything moves</text>
+<text x="530" y="603" font-size="9" font-weight="700" fill="#5b21b6">Shares only the DESIGN with the simulator, never code —</text>
+<text x="530" y="616" font-size="9" font-weight="700" fill="#5b21b6">which is exactly why it could find a bug the simulator cannot represent.</text>
+
+<!-- feedback loop -->
+<path d="M300,626 C300,660 700,660 700,626" stroke="#c2410c" stroke-width="2" fill="none" stroke-dasharray="5,3" marker-end="url(#m2)"/>
+<rect x="330" y="640" width="340" height="34" rx="4" fill="#fff7ed" stroke="#c2410c" stroke-width="1.6"/>
+<text x="500" y="656" text-anchor="middle" font-size="9.5" font-weight="700" fill="#9a3412">THE ONE FEEDBACK LOOP</text>
+<text x="500" y="669" text-anchor="middle" font-size="8.5" fill="#7c2d12">crypto_bench.py → measured sizes → config.py defaults → re-run all Module 5 tables</text>
+
+<path d="M144,626 C120,650 200,660 330,657" stroke="#c2410c" stroke-width="1.6" fill="none" stroke-dasharray="4,3"/>
+</svg>

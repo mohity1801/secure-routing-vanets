@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 700" font-family="Helvetica,Arial,sans-serif">
+<defs>
+<marker id="c1" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 z" fill="#0d7377"/></marker>
+<marker id="c2" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 z" fill="#c2410c"/></marker>
+<marker id="c3" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 z" fill="#64748b"/></marker>
+</defs>
+<text x="510" y="26" text-anchor="middle" font-size="17" font-weight="700" fill="#1a3a5c">The TDMA Frame and the Delay Model</text>
+<text x="510" y="45" text-anchor="middle" font-size="11" fill="#64748b">delay is measured in SLOTS, never milliseconds — there is no channel and no time model below the round, so a millisecond figure would be invented</text>
+
+<!-- FRAME -->
+<text x="40" y="80" font-size="12" font-weight="700" fill="#1a3a5c">One TDMA frame in a cluster of 8 members (22 such frames per round)</text>
+
+<rect x="40" y="92" width="80" height="46" rx="3" fill="#fed7aa" stroke="#c2410c" stroke-width="2"/>
+<text x="80" y="112" text-anchor="middle" font-size="10" font-weight="700" fill="#9a3412">RESERVED</text>
+<text x="80" y="126" text-anchor="middle" font-size="9" fill="#9a3412">class-2 slot</text>
+
+<g fill="#e0f2f1" stroke="#0d7377">
+<rect x="124" y="92" width="72" height="46" rx="3"/><rect x="200" y="92" width="72" height="46" rx="3"/>
+<rect x="276" y="92" width="72" height="46" rx="3"/><rect x="352" y="92" width="72" height="46" rx="3"/>
+<rect x="428" y="92" width="72" height="46" rx="3"/><rect x="504" y="92" width="72" height="46" rx="3"/>
+<rect x="580" y="92" width="72" height="46" rx="3"/><rect x="656" y="92" width="72" height="46" rx="3"/>
+</g>
+<text x="160" y="119" text-anchor="middle" font-size="10" fill="#0d7377">M1</text>
+<text x="236" y="119" text-anchor="middle" font-size="10" fill="#0d7377">M2</text>
+<text x="312" y="119" text-anchor="middle" font-size="10" fill="#0d7377">M3</text>
+<text x="388" y="119" text-anchor="middle" font-size="10" fill="#0d7377">M4</text>
+<text x="464" y="119" text-anchor="middle" font-size="10" fill="#0d7377">M5</text>
+<text x="540" y="119" text-anchor="middle" font-size="10" fill="#0d7377">M6</text>
+<text x="616" y="119" text-anchor="middle" font-size="10" fill="#0d7377">M7</text>
+<text x="692" y="119" text-anchor="middle" font-size="10" fill="#0d7377">M8</text>
+
+<rect x="732" y="92" width="110" height="46" rx="3" fill="#dbeafe" stroke="#1a3a5c" stroke-width="2"/>
+<text x="787" y="112" text-anchor="middle" font-size="10" font-weight="700" fill="#1a3a5c">FUSE + FORWARD</text>
+<text x="787" y="126" text-anchor="middle" font-size="9" fill="#1e40af">1 packet → RSU</text>
+
+<text x="80" y="152" text-anchor="middle" font-size="8.5" fill="#9a3412">slot 0</text>
+<text x="400" y="152" text-anchor="middle" font-size="8.5" fill="#64748b">member slots 1 … n</text>
+<text x="787" y="152" text-anchor="middle" font-size="8.5" fill="#1e40af">head's own slot</text>
+
+<!-- DELAY BRACKETS -->
+<path d="M40,172 L842,172" stroke="#0d7377" stroke-width="2" fill="none" marker-end="url(#c1)"/>
+<path d="M40,168 L40,178 M842,168 L842,178" stroke="#0d7377" stroke-width="2"/>
+<text x="441" y="190" text-anchor="middle" font-size="11" font-weight="700" fill="#0d7377">class-0 AGGREGATED delay = cluster size + 1 = 9 slots</text>
+<text x="441" y="204" text-anchor="middle" font-size="9" fill="#334155">the head cannot transmit until EVERY member has spoken, because it is fusing them all — so a reading's own slot position is irrelevant</text>
+
+<path d="M40,224 L124,224" stroke="#c2410c" stroke-width="2.4" fill="none" marker-end="url(#c2)"/>
+<path d="M40,220 L40,230" stroke="#c2410c" stroke-width="2.4"/>
+<text x="200" y="228" font-size="11" font-weight="700" fill="#c2410c">class-2 BYPASSED delay = 2 slots (reserved slot + immediate forward) — CONSTANT, independent of cluster size</text>
+
+<path d="M40,250 L100,250" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#c3)" stroke-dasharray="4,2"/>
+<path d="M40,246 L40,256" stroke="#64748b" stroke-width="2"/>
+<text x="200" y="254" font-size="11" font-weight="700" fill="#475569">ORPHAN delay = 1 slot — direct to RSU, nothing to wait for. The FASTEST path in the network.</text>
+
+<!-- deadline line -->
+<line x1="40" y1="276" x2="980" y2="276" stroke="#b91c1c" stroke-width="1.6" stroke-dasharray="7,4"/>
+<rect x="290" y="266" width="180" height="20" rx="3" fill="#fef2f2" stroke="#b91c1c"/>
+<text x="380" y="280" text-anchor="middle" font-size="10" font-weight="700" fill="#b91c1c">deadline_slots = 4</text>
+
+<!-- THE INVERSION -->
+<rect x="40" y="300" width="940" height="188" rx="6" fill="#fffbeb" stroke="#b8860b" stroke-width="1.7"/>
+<text x="54" y="322" font-size="13" font-weight="700" fill="#78350f">THE CONSEQUENCE — coverage and emergency latency are in direct opposition</text>
+<text x="54" y="341" font-size="10" fill="#78350f">Orphans skip fusion, so they are the low-delay path. A protocol that is GOOD at coverage has few orphans, therefore larger clusters, therefore longer frames,</text>
+<text x="54" y="355" font-size="10" fill="#78350f">therefore later readings — and it has removed the accidental fast path that orphaning provided. Measured across 7 protocols × 2 scenarios, before any bypass existed:</text>
+
+<!-- mini table -->
+<line x1="54" y1="368" x2="966" y2="368" stroke="#d6c08a"/>
+<text x="64" y="384" font-size="9.5" font-weight="700" fill="#78350f">protocol</text>
+<text x="230" y="384" font-size="9.5" font-weight="700" fill="#78350f">urban orphan %</text>
+<text x="350" y="384" font-size="9.5" font-weight="700" fill="#78350f">delay</text>
+<text x="430" y="384" font-size="9.5" font-weight="700" fill="#78350f">dl-miss</text>
+<text x="560" y="384" font-size="9.5" font-weight="700" fill="#78350f">highway orphan %</text>
+<text x="700" y="384" font-size="9.5" font-weight="700" fill="#78350f">delay</text>
+<text x="780" y="384" font-size="9.5" font-weight="700" fill="#78350f">dl-miss</text>
+<line x1="54" y1="390" x2="966" y2="390" stroke="#d6c08a"/>
+
+<text x="64" y="406" font-size="9.5" font-weight="700" fill="#15803d">HEED</text>
+<text x="230" y="406" font-size="9.5" fill="#334155">46.8</text><text x="350" y="406" font-size="9.5" fill="#334155">4.22</text>
+<text x="430" y="406" font-size="9.5" font-weight="700" fill="#15803d">0.273</text>
+<text x="560" y="406" font-size="9.5" fill="#334155">48.0</text><text x="700" y="406" font-size="9.5" fill="#334155">5.24</text>
+<text x="780" y="406" font-size="9.5" font-weight="700" fill="#15803d">0.387</text>
+
+<text x="64" y="422" font-size="9.5" fill="#334155">LEACH</text>
+<text x="230" y="422" font-size="9.5" fill="#334155">38.5</text><text x="350" y="422" font-size="9.5" fill="#334155">6.91</text><text x="430" y="422" font-size="9.5" fill="#334155">0.602</text>
+<text x="560" y="422" font-size="9.5" fill="#334155">31.2</text><text x="700" y="422" font-size="9.5" fill="#334155">8.15</text><text x="780" y="422" font-size="9.5" fill="#334155">0.609</text>
+
+<text x="64" y="438" font-size="9.5" fill="#334155">CSGD-NET</text>
+<text x="230" y="438" font-size="9.5" fill="#334155">19.3</text><text x="350" y="438" font-size="9.5" fill="#334155">7.70</text><text x="430" y="438" font-size="9.5" fill="#334155">0.687</text>
+<text x="560" y="438" font-size="9.5" fill="#334155">10.1</text><text x="700" y="438" font-size="9.5" fill="#334155">10.14</text><text x="780" y="438" font-size="9.5" fill="#334155">0.820</text>
+
+<text x="64" y="454" font-size="9.5" fill="#334155">LEACH-C / PSO / GA</text>
+<text x="230" y="454" font-size="9.5" fill="#334155">5.9 – 9.2</text><text x="350" y="454" font-size="9.5" fill="#334155">8.6 – 9.2</text><text x="430" y="454" font-size="9.5" fill="#334155">0.78 – 0.89</text>
+<text x="560" y="454" font-size="9.5" fill="#334155">0.2 – 1.1</text><text x="700" y="454" font-size="9.5" fill="#334155">10.4 – 10.6</text><text x="780" y="454" font-size="9.5" fill="#334155">0.90 – 0.95</text>
+
+<text x="64" y="472" font-size="9.5" font-weight="700" fill="#b91c1c">CHIRP (ours)</text>
+<text x="230" y="472" font-size="9.5" font-weight="700" fill="#b91c1c">3.1</text><text x="350" y="472" font-size="9.5" font-weight="700" fill="#b91c1c">9.68</text>
+<text x="430" y="472" font-size="9.5" font-weight="700" fill="#b91c1c">0.874</text>
+<text x="560" y="472" font-size="9.5" font-weight="700" fill="#b91c1c">0.1</text><text x="700" y="472" font-size="9.5" font-weight="700" fill="#b91c1c">10.23</text>
+<text x="780" y="472" font-size="9.5" font-weight="700" fill="#b91c1c">0.958</text>
+
+<!-- READ-OFF -->
+<rect x="40" y="500" width="465" height="90" rx="5" fill="#fef2f2" stroke="#b91c1c"/>
+<text x="54" y="520" font-size="11" font-weight="700" fill="#b91c1c">Read it as a negative result about our own work</text>
+<text x="54" y="539" font-size="9.5" fill="#7f1d1d">HEED strands nearly half the network and therefore has the BEST</text>
+<text x="54" y="553" font-size="9.5" fill="#7f1d1d">emergency latency in the comparison. CHIRP's headline Module 1</text>
+<text x="54" y="567" font-size="9.5" fill="#7f1d1d">achievement — an 82.7 % / 98.3 % cut in orphan rate — is a LOSS</text>
+<text x="54" y="581" font-size="9.5" font-weight="700" fill="#7f1d1d">on this metric. Sharper on the highway: no fast path left at all.</text>
+
+<rect x="515" y="500" width="465" height="90" rx="5" fill="#f0fdf4" stroke="#15803d"/>
+<text x="529" y="520" font-size="11" font-weight="700" fill="#14532d">And why it motivates the bypass</text>
+<text x="529" y="539" font-size="9.5" fill="#14532d">Clustering quality alone will always trade coverage against</text>
+<text x="529" y="553" font-size="9.5" fill="#14532d">deadlines. You cannot tune your way out of it. If you want both,</text>
+<text x="529" y="567" font-size="9.5" fill="#14532d">you need an EXPLICIT fast path that decouples emergency delay</text>
+<text x="529" y="581" font-size="9.5" font-weight="700" fill="#14532d">from cluster size — which is exactly what class-2 bypass does.</text>
+
+<!-- metric definitions -->
+<rect x="40" y="602" width="940" height="82" rx="5" fill="#f8fafc" stroke="#cbd5e1"/>
+<text x="54" y="621" font-size="10.5" font-weight="700" fill="#475569">Metric definitions — stated precisely, because they are unusual</text>
+<text x="54" y="640" font-size="9.5" fill="#334155"><tspan font-weight="700">deadline_miss</tspan> counts a DROPPED emergency message as a miss. For an ambulance the distinction between "arrived late" and "never arrived" is not worth drawing,</text>
+<text x="54" y="654" font-size="9.5" fill="#334155">and separating them would let a defence look good on latency while quietly losing the message. Pure latency is reported separately as p95 over DELIVERED readings.</text>
+<text x="54" y="672" font-size="9.5" fill="#334155">The deadline applies to <tspan font-weight="700">class-2 only</tspan>. Class-0 telemetry is delay-tolerant by definition — that is why it is aggregatable — so it gets a delay distribution instead.</text>
+</svg>

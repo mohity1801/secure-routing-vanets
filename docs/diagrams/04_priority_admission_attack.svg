@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 720" font-family="Helvetica,Arial,sans-serif">
+<defs>
+<marker id="f1" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 z" fill="#334155"/></marker>
+<marker id="f2" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 z" fill="#b91c1c"/></marker>
+<marker id="f3" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 z" fill="#15803d"/></marker>
+</defs>
+<text x="510" y="26" text-anchor="middle" font-size="17" font-weight="700" fill="#1a3a5c">The Priority Admission Decision — and the attack it must survive</text>
+<text x="510" y="45" text-anchor="middle" font-size="11" fill="#64748b">Network._priority_phase(), executed per cluster per round</text>
+
+<!-- flow -->
+<rect x="360" y="62" width="300" height="42" rx="5" fill="#f1f5f9" stroke="#334155" stroke-width="1.6"/>
+<text x="510" y="80" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1a3a5c">class-2 DEMAND arrives at the head</text>
+<text x="510" y="96" text-anchor="middle" font-size="9" fill="#475569">genuine EMS: 4 msgs/round each · attacker: 22 msgs/round each</text>
+<path d="M510,104 L510,124" stroke="#334155" stroke-width="2" marker-end="url(#f1)"/>
+
+<rect x="300" y="126" width="420" height="34" rx="5" fill="#fff7ed" stroke="#c2410c" stroke-width="1.8"/>
+<text x="510" y="148" text-anchor="middle" font-size="12" font-weight="700" fill="#9a3412">ADMISSION — the security decision</text>
+<path d="M510,160 L510,178" stroke="#334155" stroke-width="2" marker-end="url(#f1)"/>
+
+<!-- three regimes -->
+<rect x="40" y="180" width="300" height="120" rx="5" fill="#fef2f2" stroke="#b91c1c" stroke-width="1.6"/>
+<text x="190" y="200" text-anchor="middle" font-size="11.5" font-weight="700" fill="#b91c1c">none  (undefended)</text>
+<text x="190" y="219" text-anchor="middle" font-size="9.5" fill="#334155">every claim admitted</text>
+<text x="190" y="234" text-anchor="middle" font-size="9" fill="#7f1d1d">the head has no way to check one,</text>
+<text x="190" y="247" text-anchor="middle" font-size="9" fill="#7f1d1d">so genuine and false demand share</text>
+<text x="190" y="260" text-anchor="middle" font-size="9" fill="#7f1d1d">the reservation PROPORTIONALLY</text>
+<text x="190" y="280" text-anchor="middle" font-size="10" font-weight="700" fill="#b91c1c">@20 % att: dl-miss 0.437</text>
+<text x="190" y="294" text-anchor="middle" font-size="10" font-weight="700" fill="#b91c1c">11.26 % of network energy drained</text>
+
+<rect x="356" y="180" width="300" height="120" rx="5" fill="#fffbeb" stroke="#b8860b" stroke-width="1.6"/>
+<text x="506" y="200" text-anchor="middle" font-size="11.5" font-weight="700" fill="#78350f">trust  (behavioural)</text>
+<text x="506" y="219" text-anchor="middle" font-size="9.5" fill="#334155">refuse nodes below trust_gate</text>
+<text x="506" y="234" text-anchor="middle" font-size="9" fill="#78350f">STATISTICAL — inherits the trust</text>
+<text x="506" y="247" text-anchor="middle" font-size="9" fill="#78350f">engine's false positives: an ambulance</text>
+<text x="506" y="260" text-anchor="middle" font-size="9" fill="#78350f">wrongly distrusted loses its slot</text>
+<text x="506" y="280" text-anchor="middle" font-size="10" font-weight="700" fill="#b8860b">@20 % att: dl-miss 0.234</text>
+<text x="506" y="294" text-anchor="middle" font-size="10" font-weight="700" fill="#b8860b">halves the damage — never removes it</text>
+
+<rect x="672" y="180" width="300" height="120" rx="5" fill="#f0fdf4" stroke="#15803d" stroke-width="1.8"/>
+<text x="822" y="200" text-anchor="middle" font-size="11.5" font-weight="700" fill="#14532d">auth  (cryptographic)</text>
+<text x="822" y="219" text-anchor="middle" font-size="9.5" fill="#334155">only TA-issued EMS role admitted</text>
+<text x="822" y="234" text-anchor="middle" font-size="9" fill="#14532d">not a statistical judgement at all —</text>
+<text x="822" y="247" text-anchor="middle" font-size="9" fill="#14532d">false demand never enters the</text>
+<text x="822" y="260" text-anchor="middle" font-size="9" fill="#14532d">reservation, so it is never diluted</text>
+<text x="822" y="280" text-anchor="middle" font-size="10" font-weight="700" fill="#15803d">@ EVERY att fraction: dl-miss 0.000</text>
+<text x="822" y="294" text-anchor="middle" font-size="10" font-weight="700" fill="#15803d">0.00 % drained · p = 5.1e-06</text>
+
+<path d="M190,300 L400,326" stroke="#334155" stroke-width="1.5" fill="none" marker-end="url(#f1)"/>
+<path d="M506,300 L506,326" stroke="#334155" stroke-width="1.5" marker-end="url(#f1)"/>
+<path d="M822,300 L620,326" stroke="#334155" stroke-width="1.5" fill="none" marker-end="url(#f1)"/>
+
+<!-- arbitration -->
+<rect x="300" y="328" width="420" height="88" rx="5" fill="#eff6ff" stroke="#1a3a5c" stroke-width="1.7"/>
+<text x="510" y="348" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1a3a5c">ARBITRATION against a FINITE reservation</text>
+<text x="510" y="367" text-anchor="middle" font-size="10" font-family="monospace" fill="#1e3a5f">capacity = emergency_slots × packets_per_round = 1 × 22 = 22</text>
+<text x="510" y="384" text-anchor="middle" font-size="10" font-family="monospace" fill="#1e3a5f">served = min(admitted, capacity)</text>
+<text x="510" y="401" text-anchor="middle" font-size="10" font-family="monospace" fill="#1e3a5f">share  = served / admitted    (proportional when oversubscribed)</text>
+
+<path d="M420,416 L360,442" stroke="#15803d" stroke-width="2" fill="none" marker-end="url(#f3)"/>
+<path d="M600,416 L660,442" stroke="#b91c1c" stroke-width="2" fill="none" marker-end="url(#f2)"/>
+
+<rect x="130" y="444" width="290" height="72" rx="5" fill="#f0fdf4" stroke="#15803d" stroke-width="1.6"/>
+<text x="275" y="464" text-anchor="middle" font-size="11" font-weight="700" fill="#14532d">SERVED — bypass fusion</text>
+<text x="275" y="482" text-anchor="middle" font-size="9.5" fill="#14532d">delay 2 slots · deadline met</text>
+<text x="275" y="496" text-anchor="middle" font-size="9" fill="#334155">head refunds aggregation, then pays</text>
+<text x="275" y="509" text-anchor="middle" font-size="9" font-family="monospace" fill="#334155">tx_energy(k + sig_bits, d_rsu) each</text>
+
+<rect x="600" y="444" width="290" height="72" rx="5" fill="#fef2f2" stroke="#b91c1c" stroke-width="1.6"/>
+<text x="745" y="464" text-anchor="middle" font-size="11" font-weight="700" fill="#b91c1c">FALLBACK — ordinary service</text>
+<text x="745" y="482" text-anchor="middle" font-size="9.5" fill="#7f1d1d">delay = cluster size + 1 · DEADLINE MISSED</text>
+<text x="745" y="496" text-anchor="middle" font-size="9" fill="#334155">fused into the class-0 packet</text>
+<text x="745" y="509" text-anchor="middle" font-size="9" fill="#334155">exactly as if priority did not exist</text>
+
+<!-- THE ATTACK ARITHMETIC -->
+<rect x="40" y="534" width="465" height="172" rx="6" fill="#fef2f2" stroke="#b91c1c" stroke-width="1.8"/>
+<text x="54" y="556" font-size="13" font-weight="700" fill="#b91c1c">The attack arithmetic — worked example, one cluster</text>
+<text x="54" y="577" font-size="10" fill="#7f1d1d">capacity = 22 class-2 messages per cluster per round</text>
+<text x="54" y="596" font-size="10" fill="#7f1d1d">1 genuine ambulance asserts      <tspan font-family="monospace" font-weight="700">  4</tspan></text>
+<text x="54" y="612" font-size="10" fill="#7f1d1d">1 false-priority attacker asserts <tspan font-family="monospace" font-weight="700"> 22</tspan>   ← saturates it alone</text>
+<line x1="54" y1="620" x2="330" y2="620" stroke="#b91c1c"/>
+<text x="54" y="636" font-size="10" fill="#7f1d1d">admitted demand                   <tspan font-family="monospace" font-weight="700"> 26</tspan></text>
+<text x="54" y="652" font-size="10" fill="#7f1d1d">share = 22 / 26 = <tspan font-family="monospace" font-weight="700">0.846</tspan></text>
+<text x="54" y="670" font-size="10.5" font-weight="700" fill="#b91c1c">→ the ambulance gets 3.38 of its 4 slots. It loses 15 %</text>
+<text x="54" y="685" font-size="10.5" font-weight="700" fill="#b91c1c">   to ONE attacker. With two attackers it loses 54 %.</text>
+<text x="54" y="700" font-size="9" font-style="italic" fill="#7f1d1d">Without authentication the head cannot prefer the genuine claim.</text>
+
+<rect x="515" y="534" width="465" height="172" rx="6" fill="#fff7ed" stroke="#c2410c" stroke-width="1.8"/>
+<text x="529" y="556" font-size="13" font-weight="700" fill="#9a3412">The asymmetry — why counting vehicles misleads</text>
+<text x="529" y="577" font-size="10" fill="#7c2d12">At 5 % attackers in a 100-node network:</text>
+<text x="529" y="596" font-size="10" fill="#7c2d12">5 ambulances × 4 msgs  =  <tspan font-family="monospace" font-weight="700">20</tspan> genuine assertions</text>
+<text x="529" y="612" font-size="10" fill="#7c2d12">5 attackers  × 22 msgs =  <tspan font-family="monospace" font-weight="700">110</tspan> false assertions</text>
+<text x="529" y="634" font-size="10.5" font-weight="700" fill="#b91c1c">Equal populations. 5.5× the demand.</text>
+<text x="529" y="653" font-size="10" fill="#7c2d12">Measured consequence: <tspan font-weight="700">83 % of the reservation's energy</tspan></text>
+<text x="529" y="667" font-size="10" fill="#7c2d12">already serves liars at just 5 % attackers — identical in both</text>
+<text x="529" y="681" font-size="10" fill="#7c2d12">scenarios, because it is a property of the traffic model, not the road.</text>
+<text x="529" y="700" font-size="9" font-style="italic" fill="#7c2d12">The asymmetry is not in the NUMBER of attackers — it is in how hard each pushes.</text>
+</svg>

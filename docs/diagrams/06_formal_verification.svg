@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 700" font-family="Helvetica,Arial,sans-serif">
+<defs>
+<marker id="s1" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 z" fill="#5b21b6"/></marker>
+<marker id="s2" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 z" fill="#b91c1c"/></marker>
+</defs>
+<text x="510" y="26" text-anchor="middle" font-size="17" font-weight="700" fill="#1a3a5c">Formal Verification (Module 3a) — Scyther v1.3.0, --max-runs=4</text>
+<text x="510" y="45" text-anchor="middle" font-size="11.5" fill="#64748b">32 claims verified · 8 failing BY DESIGN · one real bug found that the simulator could not see</text>
+
+<!-- model map -->
+<rect x="30" y="62" width="300" height="118" rx="5" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.6"/>
+<text x="180" y="82" text-anchor="middle" font-size="12" font-weight="700" fill="#5b21b6">register.spdl — 8/8 ✓</text>
+<text x="42" y="101" font-size="9" font-family="monospace" fill="#334155">1. V→TA  V,{TagCertReq,V,pid,EMS,nv}k(V,TA)</text>
+<text x="42" y="114" font-size="9" font-family="monospace" fill="#334155">2. TA→V  {TagCert,pid,EMS,V,nv}sk(TA)</text>
+<text x="42" y="133" font-size="9" fill="#5b21b6">roles: V, TA · claims: Alive, Weakagree, Niagree, Nisynch</text>
+<text x="42" y="149" font-size="9" fill="#334155">k(V,TA) is the provisioning credential — without it the</text>
+<text x="42" y="161" font-size="9" fill="#334155">model would describe a TA issuing EMS certs to anyone,</text>
+<text x="42" y="173" font-size="9" font-weight="700" fill="#b91c1c">which would make the whole defence vacuous.</text>
+
+<path d="M330,120 L364,120" stroke="#5b21b6" stroke-width="2" marker-end="url(#s1)"/>
+
+<rect x="366" y="62" width="330" height="118" rx="5" fill="#f0fdf4" stroke="#15803d" stroke-width="2.2"/>
+<text x="531" y="82" text-anchor="middle" font-size="12" font-weight="700" fill="#14532d">priority.spdl — THE LOAD-BEARING MODEL</text>
+<text x="378" y="101" font-size="9" font-family="monospace" fill="#334155">3. V→C  V,{TagCert,pid,EMS,V}sk(TA),nv,</text>
+<text x="378" y="113" font-size="9" font-family="monospace" fill="#334155">        {TagAssert,V,pid,EMS,nv,C}sk(V)</text>
+<text x="378" y="126" font-size="9" font-family="monospace" fill="#334155">4. C→V  {TagGrant,nv,nc,V,C}sk(C)</text>
+<text x="378" y="145" font-size="10" font-weight="700" fill="#15803d">claim_C4(C, Nisynch) = Ok, proof of correctness</text>
+<text x="378" y="160" font-size="9" fill="#14532d">the assertion binds the TARGET HEAD C, so an assertion</text>
+<text x="378" y="172" font-size="9" fill="#14532d">overheard in one cluster cannot be relayed into another</text>
+
+<rect x="716" y="62" width="274" height="118" rx="5" fill="#eff6ff" stroke="#1a3a5c" stroke-width="1.6"/>
+<text x="853" y="82" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1a3a5c">What C4 establishes</text>
+<text x="728" y="101" font-size="9" fill="#1e3a5f">Nisynch over 3 roles requires EVERY preceding event in</text>
+<text x="728" y="113" font-size="9" fill="#1e3a5f">EVERY role to have a matching partner, in order. So a</text>
+<text x="728" y="125" font-size="9" fill="#1e3a5f">head's slot grant implies:</text>
+<text x="728" y="140" font-size="9" fill="#14532d">• a REAL TA run issued that role to that vehicle</text>
+<text x="728" y="152" font-size="9" fill="#14532d">• a REAL vehicle run asserted it</text>
+<text x="728" y="164" font-size="9" fill="#14532d">• all three agree on pid, role, nonce</text>
+<text x="728" y="176" font-size="9" font-weight="700" fill="#14532d">• the nonce rules out replay</text>
+
+<!-- data path models -->
+<rect x="30" y="192" width="470" height="112" rx="5" fill="#f0fdfa" stroke="#0d7377" stroke-width="1.6"/>
+<text x="265" y="212" text-anchor="middle" font-size="12" font-weight="700" fill="#0d7377">aggregate.spdl — 12/12 ✓  (three deployed message types)</text>
+<text x="42" y="231" font-size="9" font-family="monospace" fill="#334155">chirp-member    M→C {TagReading,   M,reading,nm,C}k(M,C)</text>
+<text x="42" y="245" font-size="9" font-family="monospace" fill="#334155">chirp-aggregate C→R {TagAggregate, C,agg,nc,R}k(C,R)</text>
+<text x="42" y="259" font-size="9" font-family="monospace" fill="#334155">chirp-verbatim  V→R {TagEmergency, V,pid,EMS,emsg,nv,R}sk(V)</text>
+<text x="42" y="278" font-size="9.5" font-weight="700" fill="#0d7377">chirp-verbatim R.Nisynch: the RSU authenticates the VEHICLE</text>
+<text x="42" y="291" font-size="9.5" font-weight="700" fill="#0d7377">end-to-end, through a relay it does not trust at all.</text>
+
+<rect x="516" y="192" width="474" height="112" rx="5" fill="#fef2f2" stroke="#b91c1c" stroke-width="1.8"/>
+<text x="753" y="212" text-anchor="middle" font-size="12" font-weight="700" fill="#b91c1c">fusion-limit.spdl — 0/2, FAILS BY DESIGN</text>
+<text x="528" y="231" font-size="9" fill="#334155">Can the RSU authenticate the MEMBER through a fused packet?</text>
+<text x="528" y="247" font-size="9.5" font-weight="700" fill="#b91c1c">R.Niagree and R.Nisynch both FAIL. That failure IS the result.</text>
+<text x="528" y="264" font-size="9" fill="#7f1d1d">The fused value is fresh at the head, not a recoverable function</text>
+<text x="528" y="276" font-size="9" fill="#7f1d1d">of the readings. A MAC attests to WHO SENT a value, never to</text>
+<text x="528" y="288" font-size="9" fill="#7f1d1d">whether it faithfully summarises anything.</text>
+<text x="528" y="300" font-size="9" font-weight="700" fill="#b91c1c">→ a compromised head can fabricate it, undetectably.</text>
+
+<!-- THE BUG -->
+<rect x="30" y="316" width="960" height="180" rx="6" fill="#fff7ed" stroke="#c2410c" stroke-width="2.2"/>
+<text x="44" y="338" font-size="14" font-weight="700" fill="#9a3412">THE BUG SCYTHER FOUND — cross-protocol MAC confusion</text>
+
+<text x="44" y="360" font-size="10" font-weight="700" fill="#7c2d12">Before (no domain separation) — the two data-path MACs were structurally identical:</text>
+<rect x="44" y="366" width="440" height="44" rx="3" fill="#fff" stroke="#fdba74"/>
+<text x="56" y="384" font-size="9.5" font-family="monospace" fill="#334155">member reading  : {M, reading, nm, C}k(M,C)</text>
+<text x="56" y="400" font-size="9.5" font-family="monospace" fill="#334155">fused aggregate : {C, agg,     nc, R}k(C,R)</text>
+
+<text x="44" y="430" font-size="10" font-weight="700" fill="#b91c1c">Attack trace (verbatim from --dot-output):</text>
+<rect x="44" y="436" width="440" height="52" rx="3" fill="#fef2f2" stroke="#fca5a5"/>
+<text x="56" y="452" font-size="8.5" font-family="monospace" fill="#7f1d1d">Run#2 Alice as HEAD, chirp-AGGREGATE → RSU Charlie:</text>
+<text x="56" y="464" font-size="8.5" font-family="monospace" fill="#7f1d1d">  (Alice,agg,nc,{Alice,agg,nc,Charlie}k(Alice,Charlie))</text>
+<text x="56" y="478" font-size="8.5" font-family="monospace" fill="#b91c1c">Run#1 Charlie accepts the SAME bitstring as a MEMBER READING.</text>
+
+<rect x="500" y="360" width="476" height="60" rx="4" fill="#fff" stroke="#fdba74"/>
+<text x="512" y="378" font-size="10" font-weight="700" fill="#9a3412">Failure signature — and why it is diagnostic</text>
+<text x="512" y="394" font-size="9" fill="#334155">Alive and Weakagree PASSED; Niagree and Nisynch FAILED.</text>
+<text x="512" y="408" font-size="9" font-weight="700" fill="#9a3412">The receiver had the right peer but the WRONG MESSAGE MEANING.</text>
+
+<rect x="500" y="428" width="476" height="60" rx="4" fill="#f0fdf4" stroke="#86efac"/>
+<text x="512" y="446" font-size="10" font-weight="700" fill="#14532d">Fix + re-verification</text>
+<text x="512" y="462" font-size="9" fill="#14532d">A distinct constant tag inside every MAC and signature, so the</text>
+<text x="512" y="474" font-size="9" fill="#14532d">message types occupy disjoint formats. All 12 claims then verify,</text>
+<text x="512" y="486" font-size="9" font-weight="700" fill="#14532d">and the suite verifies identically file-by-file OR concatenated.</text>
+
+<!-- why simulator blind -->
+<rect x="30" y="508" width="465" height="82" rx="5" fill="#eff6ff" stroke="#1a3a5c" stroke-width="1.6"/>
+<text x="44" y="528" font-size="11.5" font-weight="700" fill="#1a3a5c">Why the simulator could never find this</text>
+<text x="44" y="547" font-size="9.5" fill="#1e3a5f">In network.py a member reading and a fused aggregate are DIFFERENT</text>
+<text x="44" y="560" font-size="9.5" fill="#1e3a5f">PYTHON VARIABLES reached by different code paths. There is no</text>
+<text x="44" y="573" font-size="9.5" fill="#1e3a5f">bitstring and no wire format, so the confusion cannot be represented.</text>
+<text x="44" y="586" font-size="9.5" font-weight="700" fill="#1a3a5c">The simulator cannot express the bug. This is the argument for doing formal work.</text>
+
+<rect x="515" y="508" width="475" height="82" rx="5" fill="#f0fdf4" stroke="#15803d" stroke-width="1.6"/>
+<text x="529" y="528" font-size="11.5" font-weight="700" fill="#14532d">And the architectural payoff of fusion-limit.spdl</text>
+<text x="529" y="547" font-size="9.5" fill="#14532d">Because a class-2 message is never transformed, the vehicle's own</text>
+<text x="529" y="560" font-size="9.5" fill="#14532d">signature survives the relay to the RSU. So the bypass gains a SECOND</text>
+<text x="529" y="573" font-size="9.5" fill="#14532d">justification with nothing to do with latency:</text>
+<text x="529" y="586" font-size="9.5" font-weight="700" fill="#14532d">Fusion buys energy and costs provenance.</text>
+
+<!-- the 6 failures -->
+<rect x="30" y="602" width="960" height="86" rx="5" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+<text x="44" y="622" font-size="11.5" font-weight="700" fill="#475569">The six failing claims in priority.spdl are NOT a vulnerability — diagnosed by experiment, after two wrong guesses</text>
+<text x="44" y="641" font-size="9.5" fill="#334155">Cause: <tspan font-weight="700">the TA never learns which cluster head the vehicle will later talk to.</tspan> Registration happens offline and once; message 1 carries no head identity.</text>
+<text x="44" y="655" font-size="9.5" fill="#334155">Weakagree over three roles asks whether EVERY other role is "running the protocol with" the claimer — and the TA is not running with any head.</text>
+<text x="44" y="672" font-size="9.5" fill="#334155">Confirmed: delete the TA role, keep the exchange identical, and <tspan font-weight="700">all six verify</tspan> → preserved as priority-assert.spdl (8/8 ✓).</text>
+<text x="44" y="684" font-size="9" font-style="italic" fill="#64748b">Rejected first: (a) "no adversary action" — the trace did contain a redirect node; (b) "the signature doesn't bind V" — binding V changed nothing.</text>
+</svg>

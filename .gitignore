@@ -6,3 +6,6 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
+
+# Harness-generated mirror of CLAUDE.md (byte-identical; nothing lost by ignoring)
+AGENTS.md

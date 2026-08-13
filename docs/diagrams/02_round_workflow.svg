@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 660" font-family="Helvetica,Arial,sans-serif">
+<defs>
+<marker id="b" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 z" fill="#1a3a5c"/></marker>
+</defs>
+<text x="510" y="26" text-anchor="middle" font-size="17" font-weight="700" fill="#1a3a5c">Round Workflow — what happens, who pays, and what it costs</text>
+<text x="510" y="45" text-anchor="middle" font-size="11" fill="#64748b">one round = 5 phases; energy figures are urban, E0 = 500 mJ per node</text>
+
+<!-- phase boxes -->
+<g>
+<rect x="30" y="70" width="180" height="96" rx="6" fill="#eff6ff" stroke="#1a3a5c" stroke-width="1.7"/>
+<circle cx="52" cy="92" r="12" fill="#1a3a5c"/><text x="52" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">1</text>
+<text x="120" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#1a3a5c">MOBILITY STEP</text>
+<text x="120" y="116" text-anchor="middle" font-size="9" fill="#334155">vehicles move for</text>
+<text x="120" y="129" text-anchor="middle" font-size="9" fill="#334155">round_duration = 1 s</text>
+<text x="120" y="146" text-anchor="middle" font-size="9" fill="#64748b">highway: lanes + wrap</text>
+<text x="120" y="158" text-anchor="middle" font-size="9" fill="#64748b">urban: grid + turns</text>
+</g>
+<path d="M210,118 L240,118" stroke="#1a3a5c" stroke-width="2" marker-end="url(#b)"/>
+
+<g>
+<rect x="242" y="70" width="190" height="96" rx="6" fill="#f0fdfa" stroke="#0d7377" stroke-width="1.7"/>
+<circle cx="264" cy="92" r="12" fill="#0d7377"/><text x="264" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">2</text>
+<text x="340" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#0d7377">CH ELECTION</text>
+<text x="337" y="116" text-anchor="middle" font-size="9" fill="#334155">Cuckoo Search: 10 nests ×</text>
+<text x="337" y="129" text-anchor="middle" font-size="9" fill="#334155">20 iters, Lévy → Gaussian</text>
+<text x="337" y="145" text-anchor="middle" font-size="9" fill="#334155">pool filtered by trust gate</text>
+<text x="337" y="158" text-anchor="middle" font-size="9" fill="#334155">and ch_cooldown = 3</text>
+</g>
+<path d="M432,118 L462,118" stroke="#1a3a5c" stroke-width="2" marker-end="url(#b)"/>
+
+<g>
+<rect x="464" y="70" width="190" height="96" rx="6" fill="#fffbeb" stroke="#b8860b" stroke-width="1.7"/>
+<circle cx="486" cy="92" r="12" fill="#b8860b"/><text x="486" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">3</text>
+<text x="562" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#78350f">SETUP PHASE</text>
+<text x="559" y="116" text-anchor="middle" font-size="9" fill="#334155">ADV broadcast (heads)</text>
+<text x="559" y="129" text-anchor="middle" font-size="9" fill="#334155">JOIN (members) + schedule</text>
+<text x="559" y="146" text-anchor="middle" font-size="9" font-weight="700" fill="#b91c1c">OUR ADDITION —</text>
+<text x="559" y="158" text-anchor="middle" font-size="9" font-weight="700" fill="#b91c1c">base paper charges 0</text>
+</g>
+<path d="M654,118 L684,118" stroke="#1a3a5c" stroke-width="2" marker-end="url(#b)"/>
+
+<g>
+<rect x="686" y="70" width="190" height="96" rx="6" fill="#fef2f2" stroke="#b91c1c" stroke-width="1.7"/>
+<circle cx="708" cy="92" r="12" fill="#b91c1c"/><text x="708" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">4</text>
+<text x="784" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#b91c1c">STEADY STATE</text>
+<text x="781" y="116" text-anchor="middle" font-size="9" fill="#334155">22 TDMA frames</text>
+<text x="781" y="129" text-anchor="middle" font-size="9" fill="#334155">member TX · head RX</text>
+<text x="781" y="142" text-anchor="middle" font-size="9" fill="#334155">fuse · forward · orphans</text>
+<text x="781" y="158" text-anchor="middle" font-size="9" font-weight="700" fill="#b91c1c">→ priority phase</text>
+</g>
+<path d="M876,118 L906,118" stroke="#1a3a5c" stroke-width="2" marker-end="url(#b)"/>
+
+<g>
+<rect x="880" y="180" width="130" height="86" rx="6" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.7"/>
+<circle cx="900" cy="202" r="12" fill="#7c3aed"/><text x="900" y="206" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">5</text>
+<text x="945" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#5b21b6">TRUST</text>
+<text x="945" y="226" text-anchor="middle" font-size="9" fill="#334155">watchdog reports</text>
+<text x="945" y="239" text-anchor="middle" font-size="9" fill="#334155">→ Beta evidence</text>
+<text x="945" y="252" text-anchor="middle" font-size="9" fill="#334155">+ assertion rate</text>
+</g>
+<path d="M906,118 C960,118 960,160 945,180" stroke="#1a3a5c" stroke-width="2" fill="none" marker-end="url(#b)"/>
+<path d="M880,224 C700,224 260,210 120,180" stroke="#94a3b8" stroke-width="1.6" fill="none" stroke-dasharray="5,3" marker-end="url(#b)"/>
+<text x="480" y="206" text-anchor="middle" font-size="9.5" fill="#64748b" font-style="italic">next round — trust scores feed back into the CH election pool and the slot-grant gate</text>
+
+<!-- ENERGY TABLE -->
+<text x="30" y="300" font-size="13" font-weight="700" fill="#1a3a5c">Per-round energy by role (urban) — why the design decisions came out as they did</text>
+<rect x="30" y="312" width="470" height="140" rx="5" fill="#fff" stroke="#cbd5e1"/>
+<line x1="30" y1="338" x2="500" y2="338" stroke="#cbd5e1"/>
+<text x="44" y="331" font-size="10" font-weight="700" fill="#475569">role</text>
+<text x="300" y="331" font-size="10" font-weight="700" fill="#475569">cost / round</text>
+<text x="410" y="331" font-size="10" font-weight="700" fill="#475569">rounds to death</text>
+
+<text x="44" y="358" font-size="10" font-weight="700" fill="#b91c1c">cluster head (8 members)</text>
+<text x="300" y="358" font-size="10" font-weight="700" fill="#b91c1c">88.00 mJ</text>
+<text x="410" y="358" font-size="10" font-weight="700" fill="#b91c1c">5.7</text>
+
+<text x="44" y="380" font-size="10" fill="#334155">orphan (direct to RSU)</text>
+<text x="300" y="380" font-size="10" fill="#334155">25.34 mJ</text>
+<text x="410" y="380" font-size="10" fill="#334155">19.7</text>
+
+<text x="44" y="402" font-size="10" fill="#334155">ordinary member</text>
+<text x="300" y="402" font-size="10" fill="#334155">11.61 mJ</text>
+<text x="410" y="402" font-size="10" fill="#334155">43.0</text>
+
+<text x="44" y="424" font-size="10" font-weight="700" fill="#15803d">one re-election (setup)</text>
+<text x="300" y="424" font-size="10" font-weight="700" fill="#15803d">0.2833 mJ</text>
+<text x="410" y="424" font-size="10" fill="#64748b">—</text>
+
+<line x1="30" y1="432" x2="500" y2="432" stroke="#cbd5e1"/>
+<text x="44" y="447" font-size="9.5" font-weight="700" fill="#78350f">Serving as head costs 311× one re-election.</text>
+
+<!-- consequences -->
+<rect x="520" y="312" width="490" height="140" rx="5" fill="#f0fdf4" stroke="#15803d"/>
+<text x="534" y="331" font-size="11" font-weight="700" fill="#14532d">Three design decisions that follow from that table</text>
+<text x="534" y="352" font-size="9.5" fill="#14532d">1. <tspan font-weight="700">Re-elect every round</tspan> (recluster_max_rounds = 1). Holding heads to save</text>
+<text x="546" y="365" font-size="9.5" fill="#14532d">0.28 mJ of control traffic burned 440 mJ of a head's 500 mJ budget.</text>
+<text x="534" y="384" font-size="9.5" fill="#14532d">2. <tspan font-weight="700">Add a cooldown</tspan> (ch_cooldown = 3) so the same node cannot be re-elected</text>
+<text x="546" y="397" font-size="9.5" fill="#14532d">immediately — FND is governed by how often the SAME node leads.</text>
+<text x="534" y="416" font-size="9.5" fill="#14532d">3. <tspan font-weight="700">Charge the setup phase.</tspan> Without it, re-electing appears free and the</text>
+<text x="546" y="429" font-size="9.5" fill="#14532d">stability trigger cannot be evaluated at all.</text>
+<text x="534" y="446" font-size="9" fill="#166534" font-style="italic">Diagnosed with src/diagnose_fnd.py — not guessed from aggregates.</text>
+
+<!-- INVARIANT -->
+<rect x="30" y="472" width="980" height="76" rx="6" fill="#eff6ff" stroke="#1a3a5c" stroke-width="1.7"/>
+<text x="44" y="493" font-size="12" font-weight="700" fill="#1a3a5c">THE REGRESSION INVARIANT — checked before and after every change to src/</text>
+<text x="44" y="513" font-size="10" fill="#1e3a5f">With <tspan font-family="monospace" font-weight="700">ems_frac = 0</tspan> and <tspan font-family="monospace" font-weight="700">sig_bits = mac_bits = 0</tspan>, all 55 fingerprinted configurations must be BIT-IDENTICAL.</text>
+<text x="44" y="530" font-size="10" fill="#1e3a5f">Holds structurally: <tspan font-family="monospace">_priority_phase()</tspan> returns immediately when no TrafficModel is attached, and the model is attached by the RUNNER —</text>
+<text x="44" y="544" font-size="10" fill="#1e3a5f">never constructed inside Network, which would consume draws from its RNG and shift every mobility trace.</text>
+
+<rect x="30" y="558" width="980" height="88" rx="6" fill="#fff" stroke="#cbd5e1"/>
+<text x="44" y="578" font-size="11" font-weight="700" fill="#475569">The 55 configurations</text>
+<text x="44" y="598" font-size="9.5" fill="#334155">static (paper reproduction) 7 protocols × 3 seeds = 21   ·   highway 7 × 2 = 14   ·   urban 7 × 2 = 14   ·   trust under attack 3 fractions × 2 seeds = 6</text>
+<text x="44" y="616" font-size="9.5" fill="#334155">Each fingerprinted with SHA-256 over raw float64 bytes of: the full 100-node energy vector, PDR counters, per-round orphan and intra-distance traces, trust scores.</text>
+<text x="44" y="634" font-size="9.5" font-style="italic" fill="#64748b">Not "the means agreed to 4 dp" — the 100-element energy vector hashed to the same 16 hex characters. Command: python3 src/regression_gate.py --diff results/regression_reference.json /tmp/now.json</text>
+</svg>

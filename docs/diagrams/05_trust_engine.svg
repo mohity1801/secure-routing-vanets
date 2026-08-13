@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 700" font-family="Helvetica,Arial,sans-serif">
+<defs>
+<marker id="t1" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 z" fill="#5b21b6"/></marker>
+<marker id="t2" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 z" fill="#b91c1c"/></marker>
+<marker id="t3" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 z" fill="#15803d"/></marker>
+</defs>
+<text x="510" y="26" text-anchor="middle" font-size="17" font-weight="700" fill="#1a3a5c">Trust Engine — three layers, two enforcement paths, and why detection ≠ mitigation</text>
+
+<!-- evidence sources -->
+<rect x="30" y="52" width="220" height="72" rx="5" fill="#ecfeff" stroke="#0e7490" stroke-width="1.6"/>
+<text x="140" y="72" text-anchor="middle" font-size="11" font-weight="700" fill="#0e7490">WATCHDOG (private signal)</text>
+<text x="140" y="90" text-anchor="middle" font-size="9" fill="#334155">member observes: did my head</text>
+<text x="140" y="103" text-anchor="middle" font-size="9" fill="#334155">relay the aggregate to the RSU?</text>
+<text x="140" y="117" text-anchor="middle" font-size="8.5" fill="#64748b">p=0.85 observed · 5 % error · 22 obs/round</text>
+
+<rect x="270" y="52" width="220" height="72" rx="5" fill="#fff7ed" stroke="#c2410c" stroke-width="1.6"/>
+<text x="380" y="72" text-anchor="middle" font-size="11" font-weight="700" fill="#9a3412">ASSERTION RATE (public signal)</text>
+<text x="380" y="90" text-anchor="middle" font-size="9" fill="#334155">how often does this node claim</text>
+<text x="380" y="103" text-anchor="middle" font-size="9" fill="#334155">class-2 priority?  (Module 5)</text>
+<text x="380" y="117" text-anchor="middle" font-size="8.5" fill="#64748b">needs no consensus — it is stamped on the message</text>
+
+<path d="M140,124 L140,150" stroke="#5b21b6" stroke-width="2" marker-end="url(#t1)"/>
+<path d="M380,124 L380,150" stroke="#5b21b6" stroke-width="2" marker-end="url(#t1)"/>
+
+<!-- three layers -->
+<rect x="30" y="152" width="460" height="196" rx="6" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.8"/>
+<text x="260" y="173" text-anchor="middle" font-size="12.5" font-weight="700" fill="#5b21b6">THREE-LAYER BETA REPUTATION</text>
+
+<rect x="44" y="182" width="432" height="46" rx="4" fill="#fff" stroke="#a78bfa"/>
+<text x="56" y="199" font-size="10.5" font-weight="700" fill="#5b21b6">1 · DIRECT TRUST</text>
+<text x="56" y="214" font-size="9" fill="#334155">Beta(α,β) posterior mean, Laplace-smoothed → unobserved nodes sit at 0.5</text>
+<text x="56" y="225" font-size="8.5" font-style="italic" fill="#64748b">catches blackhole and greyhole</text>
+
+<rect x="44" y="232" width="432" height="52" rx="4" fill="#fff" stroke="#a78bfa"/>
+<text x="56" y="249" font-size="10.5" font-weight="700" fill="#5b21b6">2 · DECAY + ASYMMETRIC PENALTY</text>
+<text x="56" y="264" font-size="9" fill="#334155">a failure counts trust_penalty = 3 successes · evidence ages 0.9 PER OBSERVATION</text>
+<text x="56" y="277" font-size="9" fill="#334155">decay_unobserved = False — ageing unobserved nodes would rehabilitate an attacker</text>
+
+<rect x="44" y="288" width="432" height="52" rx="4" fill="#fff" stroke="#a78bfa"/>
+<text x="56" y="305" font-size="10.5" font-weight="700" fill="#5b21b6">3 · CREDIBILITY-WEIGHTED RECOMMENDATIONS</text>
+<text x="56" y="320" font-size="9" fill="#334155">reports fused at the RSU, weighted by each reporter's historical deviation</text>
+<text x="56" y="333" font-size="8.5" font-style="italic" fill="#64748b">cuts FPR 12–49 % — but does NOT uniformly improve detection, and we say so</text>
+
+<path d="M490,250 L540,250" stroke="#5b21b6" stroke-width="2.4" marker-end="url(#t1)"/>
+<rect x="544" y="222" width="150" height="56" rx="5" fill="#ede9fe" stroke="#5b21b6" stroke-width="1.8"/>
+<text x="619" y="244" text-anchor="middle" font-size="11.5" font-weight="700" fill="#5b21b6">TRUST SCORE</text>
+<text x="619" y="262" text-anchor="middle" font-size="10" fill="#334155">gate at 0.40</text>
+
+<!-- two levers -->
+<path d="M619,278 L619,300 L400,300 L400,326" stroke="#b91c1c" stroke-width="2" fill="none" marker-end="url(#t2)"/>
+<path d="M619,278 L619,300 L840,300 L840,326" stroke="#15803d" stroke-width="2" fill="none" marker-end="url(#t3)"/>
+
+<rect x="250" y="328" width="300" height="106" rx="5" fill="#fef2f2" stroke="#b91c1c" stroke-width="1.8"/>
+<text x="400" y="349" text-anchor="middle" font-size="11.5" font-weight="700" fill="#b91c1c">LEVER 1 — CH eligibility gate</text>
+<text x="400" y="367" text-anchor="middle" font-size="9.5" fill="#334155">a distrusted node cannot be elected head</text>
+<text x="400" y="384" text-anchor="middle" font-size="9.5" font-weight="700" fill="#15803d">Module 2: works. PDR 0.934 → 0.957 @20 %</text>
+<text x="400" y="404" text-anchor="middle" font-size="9.5" font-weight="700" fill="#b91c1c">Module 5: USELESS ALONE.</text>
+<text x="400" y="418" text-anchor="middle" font-size="9" fill="#7f1d1d">detection 0.925, outcome 0.452 → 0.463</text>
+<text x="400" y="430" text-anchor="middle" font-size="9" fill="#7f1d1d">— asserting priority doesn't need to be a head</text>
+
+<rect x="690" y="328" width="300" height="106" rx="5" fill="#f0fdf4" stroke="#15803d" stroke-width="1.8"/>
+<text x="840" y="349" text-anchor="middle" font-size="11.5" font-weight="700" fill="#14532d">LEVER 2 — slot-grant gate</text>
+<text x="840" y="367" text-anchor="middle" font-size="9.5" fill="#334155">refuse the reserved slot to distrusted nodes</text>
+<text x="840" y="384" text-anchor="middle" font-size="9.5" font-weight="700" fill="#15803d">added in Module 5 (priority_trust_gate)</text>
+<text x="840" y="404" text-anchor="middle" font-size="9.5" font-weight="700" fill="#15803d">HALVES the damage: 0.437 → 0.234</text>
+<text x="840" y="420" text-anchor="middle" font-size="9" fill="#166534">but statistical, so it inherits false positives:</text>
+<text x="840" y="431" font-size="9" text-anchor="middle" fill="#166534">an ambulance wrongly distrusted loses its slot</text>
+
+<!-- THE LESSON -->
+<rect x="30" y="450" width="960" height="76" rx="6" fill="#fffbeb" stroke="#b8860b" stroke-width="2"/>
+<text x="44" y="472" font-size="13.5" font-weight="700" fill="#78350f">THE TRANSFERABLE LESSON — detection is not mitigation</text>
+<text x="44" y="492" font-size="10.5" fill="#78350f">The first trust defence detected false-priority attackers at 0.93–0.96 and changed the outcome NOT AT ALL, because the detector was wired to an enforcement</text>
+<text x="44" y="507" font-size="10.5" fill="#78350f">path the attack does not traverse. Distrusting a node perfectly and then still granting it a reserved slot accomplishes nothing.</text>
+<text x="44" y="521" font-size="10.5" font-weight="700" fill="#78350f">A detection rate is not a security result until you name the enforcement path. A paper reporting "97 % attack detection" has said nothing about outcomes.</text>
+
+<!-- LIMIT -->
+<rect x="30" y="540" width="960" height="150" rx="6" fill="#fef2f2" stroke="#b91c1c" stroke-width="1.8"/>
+<text x="44" y="562" font-size="13.5" font-weight="700" fill="#b91c1c">AND THE FUNDAMENTAL LIMIT — a threshold test on rate has a step, and the attacker sits under it</text>
+
+<text x="44" y="586" font-size="10" fill="#334155">genuine EMS asserts at 4/22 = <tspan font-weight="700">0.18</tspan>   ·   detector flags above <tspan font-weight="700">0.50</tspan>   ·   greed = the fraction of its own readings an attacker asserts on</text>
+
+<line x1="44" y1="596" x2="976" y2="596" stroke="#fca5a5"/>
+<text x="54" y="612" font-size="9.5" font-weight="700" fill="#7f1d1d">greed</text>
+<text x="150" y="612" font-size="9.5" font-weight="700" fill="#7f1d1d">urban detect</text>
+<text x="270" y="612" font-size="9.5" font-weight="700" fill="#7f1d1d">highway detect</text>
+<text x="410" y="612" font-size="9.5" font-weight="700" fill="#7f1d1d">urban dl-miss (none / trust)</text>
+<text x="650" y="612" font-size="9.5" font-weight="700" fill="#7f1d1d">urban drain %</text>
+<text x="790" y="612" font-size="9.5" font-weight="700" fill="#7f1d1d">verdict</text>
+
+<text x="54" y="630" font-size="9.5" fill="#334155">0.18</text>
+<text x="150" y="630" font-size="9.5" fill="#334155">0.025</text><text x="270" y="630" font-size="9.5" fill="#334155">0.004</text>
+<text x="410" y="630" font-size="9.5" fill="#334155">0.013 / 0.011</text><text x="650" y="630" font-size="9.5" fill="#334155">4.48</text>
+<text x="790" y="630" font-size="9.5" fill="#7f1d1d">invisible, low damage</text>
+
+<text x="54" y="650" font-size="9.5" font-weight="700" fill="#b91c1c">0.50</text>
+<text x="150" y="650" font-size="9.5" font-weight="700" fill="#b91c1c">0.025</text><text x="270" y="650" font-size="9.5" font-weight="700" fill="#b91c1c">0.008</text>
+<text x="410" y="650" font-size="9.5" font-weight="700" fill="#b91c1c">0.206 / 0.207</text><text x="650" y="650" font-size="9.5" font-weight="700" fill="#b91c1c">9.08</text>
+<text x="790" y="650" font-size="9.5" font-weight="700" fill="#b91c1c">SWEET SPOT — invisible, 81 % of max damage</text>
+
+<text x="54" y="670" font-size="9.5" fill="#334155">0.75</text>
+<text x="150" y="670" font-size="9.5" fill="#334155">0.892</text><text x="270" y="670" font-size="9.5" fill="#334155">0.950</text>
+<text x="410" y="670" font-size="9.5" fill="#334155">0.348 / 0.207</text><text x="650" y="670" font-size="9.5" fill="#334155">10.45</text>
+<text x="790" y="670" font-size="9.5" fill="#334155">detected — trust now bites</text>
+
+<text x="54" y="686" font-size="9" font-style="italic" fill="#7f1d1d">At greed 0.50 detection sits AT OR BELOW the false-positive rate — the detector contributes nothing — and trust makes the outcome marginally WORSE (0.206 → 0.207).</text>
+<text x="54" y="698" font-size="9" font-style="italic" fill="#7f1d1d">Lowering the threshold cannot fix it: at 0.18 the attacker's per-node behaviour is IDENTICAL to an ambulance's. The distinguishing fact is not behavioural.</text>
+</svg>
