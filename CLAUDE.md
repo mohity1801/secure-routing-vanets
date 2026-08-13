@@ -22,8 +22,14 @@ src/            simulator. run_*.py are experiment drivers; the rest is the mode
 src/protocols/  LEACH, LEACH-C, HEED, PSO, GA, CSGD-NET (faithful), CHIRP (ours)
 formal/         Scyther .spdl models + run_scyther.py
 docs/           one file per module, each with results, ablations and negatives
+docs/diagrams/  8 SVG architecture/workflow figures, drawn from the results
 results/        JSON emitted by the runners; regression_reference.json is special
+*.pdf           generated deliverables (extraction, diagrams) — snapshots, not
+                canonical; docs/ and results/ are the source of truth
 ```
+
+**Every table in `docs/` is produced by a committed command.** If you add a
+result, add the runner too — do not leave it in an inline script.
 
 Module numbering is historical: **Module 5 (priority) lives in
 `docs/priority.md`**, not `docs/module5.md`. Module 4 (RSU-side IDS) is not
@@ -80,6 +86,8 @@ python3 src/run_module2.py --scenario urban --seeds 12       # trust under attac
 python3 src/run_priority.py --scenario urban --seeds 12      # priority + false-priority
 python3 src/run_priority.py --scenario urban --seeds 12 --bypass-cost
 python3 src/run_priority.py --scenario urban --seeds 12 --sweep-greed
+python3 src/run_priority.py --scenario urban --seeds 6  --rounds 40 --coverage-latency
+python3 src/run_priority.py --scenario urban --seeds 16 --crypto-decomp
 python3 src/crypto_bench.py                                  # crypto sizes/timings
 python3 src/verify_table4.py                                 # the Table 4 argument
 ```
@@ -102,11 +110,22 @@ The runner checks results against the expectations recorded in
 ## State
 
 Done: Module 1 (mobility + multi-metric CH election), Module 2 (trust), Module
-3a (Scyther), Module 3b (crypto cost), Module 5 (priority).
+3a (Scyther), Module 3b (crypto cost), Module 5 (priority). Both scenarios,
+crypto charged, regression gate passing.
 
-Open: Module 4 (RSU-side IDS on VeReMi) — the least novel piece, and the
-candidate to cut if time is short, see `docs/related_work.md`. Also Figs. 11–15
-regeneration and the write-up.
+Open, and **both need a decision from the user rather than more code**:
+
+- **Module 4** (RSU-side IDS on VeReMi) — not started, and the least novel
+  piece. A 2026 paper already does RF-style ML on the same public dataset, and
+  VeReMi contains none of the Layer-A attacks this project defends against. The
+  candidate to cut. See `docs/related_work.md`.
+- **Publication blockers** — an 802.11p path-loss robustness check, and real
+  SUMO traces. Neither blocks the BTP; both block a journal submission.
+
+Also open: Figs. 11–15 regeneration, and the write-up.
+
+`docs/handoff.md` carries the full state, the open decisions, and the traps —
+read it before starting anything substantial.
 
 ## Findings a fresh session would otherwise re-derive
 
