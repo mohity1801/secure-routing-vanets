@@ -46,14 +46,15 @@ the free-space branch extended over all distances.
 Exponents, from the 5.9 GHz V2V measurement literature: **highway gamma = 2.0**
 (LOS; measured 1.8–2.1, so 2.0 is mildly conservative) and **urban gamma =
 3.0** (the harsh end of the 2.7–3.0 street-canyon bracket). What this does to
-a 6400-bit transmission:
+a 6400-bit transmission (`--experiment calibration`, which also asserts the
+d0 agreement rather than leaving it to be trusted):
 
 | d | Heinzelman | logdist γ=2 | logdist γ=3 |
 |---|---|---|---|
-| 60 m | 0.550 mJ | 0.550 (×1.00) | 0.478 (×0.87) |
-| 87.71 m | 0.812 mJ | 0.812 (×1.00) | 0.812 (×1.00) |
-| 150 m | 4.532 mJ | 1.760 (×0.39) | 2.783 (×0.61) |
-| 300 m | 67.71 mJ | 6.080 (×0.09) | 20.02 (×0.30) |
+| 60 m | 0.5504 mJ | 0.5504 (×1.00) | 0.4776 (×0.87) |
+| 87.71 m | 0.8123 mJ | 0.8123 (×1.00) | 0.8123 (×1.00) |
+| 150 m | 4.5320 mJ | 1.7600 (×0.39) | 2.7828 (×0.61) |
+| 300 m | 67.712 mJ | 6.0800 (×0.09) | 20.022 (×0.30) |
 
 What deliberately does **not** change: E_RX, aggregation and the electronics
 term (receiver/processing, not propagation), TDMA capacity, the trust engine,
@@ -297,6 +298,7 @@ python3 src/run_radio.py --experiment ablation         # finding 5 (terms)
 python3 src/run_radio.py --experiment crypto           # finding 6
 python3 src/run_radio.py --experiment bypass           # the re-scoped f.2 cost
 python3 src/run_radio.py --experiment expsweep         # exponent sensitivity
+python3 src/run_radio.py --experiment calibration      # the two-model table above
 ```
 
 Outputs land in `results/radio_*.json`, each carrying both arms, the
@@ -304,3 +306,10 @@ committed-file check, and the run metadata. `--seeds N --dry` smoke-tests
 without writing. The default model is untouched: `radio_model = "heinzelman"`
 everywhere else, and the regression gate passes 55/55 bit-identical with this
 module in the tree.
+
+**The runner exits non-zero if any heinzelman arm stops reproducing the
+committed results it mirrors** — same convention as `formal/run_scyther.py`.
+A check that compared nothing counts as a failure (`VACUOUS`), not a pass, so
+renaming a result key cannot make the guardrail succeed by vacuity. Reduced
+`--seeds` therefore fails by design: the mirrors are pinned to the documented
+seed counts.

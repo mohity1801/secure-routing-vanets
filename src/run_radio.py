@@ -36,9 +36,14 @@ Experiments, one per finding under test (docs/radio.md):
     ablation   docs/module1.md -- the intra/energy terms stay load-bearing
     expsweep   sensitivity of the urban conclusions to the exponent choice
     crypto     docs/module3b.md -- compute vs radio cost of verification
+    calibration  the two models on one packet: they agree at d0 by
+               construction, and the tail is the whole question
 
 Delay stays in TDMA slots everywhere: the radio model prices energy, not
 time, so no delay figure can change units here.
+
+Exits NON-ZERO if any heinzelman arm stops reproducing the committed results
+it mirrors -- same convention as formal/run_scyther.py.
 """
 
 from __future__ import annotations
@@ -48,6 +53,7 @@ import json
 import sys
 from pathlib import Path
 from types import SimpleNamespace
+from typing import Any, NamedTuple
 
 import numpy as np
 from scipy.stats import mannwhitneyu, spearmanr
@@ -55,9 +61,11 @@ from scipy.stats import mannwhitneyu, spearmanr
 sys.path.insert(0, str(Path(__file__).parent))
 
 from config import Config                          # noqa: E402
+from energy import tx_energy                       # noqa: E402
 from protocols.chirp import CHIRP                  # noqa: E402
 from protocols.csgd_net import CSGDNet             # noqa: E402
-from run_module1 import PROTOCOLS, SCENARIOS       # noqa: E402
+from run_module1 import (ABLATION_TERMS, PROTOCOLS, SCENARIOS,  # noqa: E402
+                         ablation_weights, compare_runs)
 from run_module1 import run_once as m1_run_once    # noqa: E402
 from run_module2 import run_once as m2_run_once    # noqa: E402
 import run_priority                                # noqa: E402
@@ -69,7 +77,19 @@ from run_priority import run_once as p_run_once    # noqa: E402
 # end of the urban bracket. expsweep() covers the rest of the bracket.
 RADIO_EXP = {"highway": 2.0, "urban": 3.0}
 
+# The urban bracket, swept by exp_expsweep to show the exponent choice inside
+# it is a free parameter. Recorded in that run's _meta instead of a single
+# exponent, because for this experiment there is no single exponent.
+EXPSWEEP_GAMMAS = (2.0, 2.5, 2.75, 3.0)
+
 MODELS = ("heinzelman", "logdistance")
+
+# Attacker fraction and greed levels the headline rows are read off. Named so
+# the lookups below cannot drift from the loops that build the keys.
+ATT_HEADLINE = 0.20
+GREED_STEALTH = 0.50
+GREED_MAX = 1.00
+FREERIDE_FRACS = (0.1, 0.2, 0.3, 0.4)
 
 
 def radio_kw(scenario: str, model: str) -> dict:
@@ -87,19 +107,22 @@ def prio_args(scenario: str, seeds: int, rounds: int = 60,
 
 
 # ------------------------------------------------------------------ guardrail
-def check_committed(path: str, mine: dict, model: str) -> dict:
+def check_committed(path: str, mine: dict) -> dict:
     """Compare a heinzelman arm against the committed file it re-derives.
 
     Exact equality is the expectation, not a tolerance band: same seeds, same
     Config construction, same code path, and the regression gate already
     proves the default radio branch is bit-identical. Only keys present in
     both are compared (this runner deliberately runs a subset of some grids).
+
+    Any status other than "OK" fails the run in main(). "VACUOUS" is its own
+    status because an empty comparison is NOT a pass: if the mirror's keys stop
+    matching the committed file's, nothing is compared and a naive
+    "no differences found" would report success while checking nothing.
     """
-    if model != "heinzelman":
-        return {}
     p = Path(path)
     if not p.exists():
-        print(f"  [check] {path} not found -- skipped")
+        print(f"  [check] {path} not found -- guardrail could not run")
         return {"committed": path, "status": "missing"}
     ref = json.loads(p.read_text())
     n_ok, diffs = 0, []
@@ -116,13 +139,38 @@ def check_committed(path: str, mine: dict, model: str) -> dict:
                 n_ok += 1
             else:
                 diffs.append((key, f, rv, v))
-    status = "OK" if not diffs else "MISMATCH"
+    if diffs:
+        status = "MISMATCH"
+    elif n_ok == 0:
+        status = "VACUOUS"
+    else:
+        status = "OK"
     print(f"  [check vs {p.name}] {n_ok} values identical, "
           f"{len(diffs)} differ -> {status}")
+    if status == "VACUOUS":
+        print("      nothing was compared -- the mirror's keys no longer match "
+              f"{p.name}, so this check proves nothing")
     for k, f, rv, v in diffs[:6]:
         print(f"      {k}.{f}: committed {rv}  rerun {v}")
     return {"committed": path, "status": status, "n_identical": n_ok,
             "n_mismatch": len(diffs)}
+
+
+def break_even_distance(cfg, bits: int, energy_mj: float) -> float:
+    """Distance at which transmitting `bits` costs `energy_mj`, in closed form.
+
+    tx_energy is monotonic in d and analytically invertible under both models,
+    so this needs no search: solve k*(e_elec + eps*d^n) = E for d. Returns 0.0
+    when the per-bit electronics alone already exceed the budget, i.e. the
+    radio costs more at every distance.
+    """
+    amp = energy_mj * 1e-3 / bits - cfg.e_elec       # J/bit left for the amplifier
+    if amp <= 0:
+        return 0.0
+    if cfg.radio_model == "logdistance":
+        return float((amp / cfg.eps_ld) ** (1.0 / cfg.path_loss_exp))
+    d_fs = float((amp / cfg.eps_fs) ** 0.5)          # free-space branch
+    return d_fs if d_fs <= cfg.d0 else float((amp / cfg.eps_mp) ** 0.25)
 
 
 # ---------------------------------------------------------------- experiments
@@ -147,8 +195,7 @@ def exp_coverage(scen: str, seeds: int, rounds: int) -> dict:
               f"rho={rho:+.3f} (p={p:.4f})")
     out["_check"] = check_committed(
         f"results/priority_coverage_{scen}.json",
-        {k: v for k, v in out["heinzelman"].items() if not k.startswith("_")},
-        "heinzelman")
+        {k: v for k, v in out["heinzelman"].items() if not k.startswith("_")})
     return out
 
 
@@ -166,7 +213,7 @@ def exp_defence(scen: str, seeds: int, rounds: int) -> dict:
         print(f"{'att%':>5}{'defence':<8}{'dl-miss':>9}{'delay':>7}"
               f"{'prio mJ':>9}{'false%':>8}{'drain%':>8}{'detect':>8}{'FPR':>7}")
         arm, per_seed = {}, {}
-        for frac in (0.0, 0.20):
+        for frac in (0.0, ATT_HEADLINE):
             for d in ("none", "trust", "auth"):
                 cfg = base_cfg(prio_args(scen, seeds, rounds),
                                attacker_frac=frac, **radio_kw(scen, model))
@@ -180,7 +227,7 @@ def exp_defence(scen: str, seeds: int, rounds: int) -> dict:
                       f"{m['ems_delay']:>7.2f}{m['prio_mJ']:>9.0f}"
                       f"{m['prio_false_pct']:>8.0f}{m['drain_pct']:>8.2f}"
                       f"{det:>8}{fpr:>7}")
-        a, b = per_seed["0.2|auth"], per_seed["0.2|none"]
+        a, b = per_seed[f"{ATT_HEADLINE}|auth"], per_seed[f"{ATT_HEADLINE}|none"]
         _, p = mannwhitneyu(a, b, alternative="less")
         print(f"  dl-miss at 20%: auth {np.mean(a):.3f} vs none "
               f"{np.mean(b):.3f}  (p={p:.4g}); auth zero in "
@@ -191,8 +238,7 @@ def exp_defence(scen: str, seeds: int, rounds: int) -> dict:
         out[model] = arm
     out["_check"] = check_committed(
         f"results/priority_defence_{scen}.json",
-        {k: v for k, v in out["heinzelman"].items() if not k.startswith("_")},
-        "heinzelman")
+        {k: v for k, v in out["heinzelman"].items() if not k.startswith("_")})
     return out
 
 
@@ -207,7 +253,7 @@ def exp_greed(scen: str, seeds: int, rounds: int) -> dict:
         print(f"{'greed':>6}{'defence':<8}{'dl-miss':>9}{'drain%':>8}"
               f"{'detect':>8}{'FPR':>7}")
         arm = {}
-        for greed in (0.18, 0.50, 1.00):
+        for greed in (0.18, GREED_STEALTH, GREED_MAX):
             for d in ("none", "trust", "auth"):
                 cfg = base_cfg(prio_args(scen, seeds, rounds),
                                attacker_frac=0.20, falsepriority_rate=greed,
@@ -220,14 +266,14 @@ def exp_greed(scen: str, seeds: int, rounds: int) -> dict:
                 print(f"{greed:>6.2f}{d:<8}{m['ems_miss']:>9.3f}"
                       f"{m['drain_pct']:>8.2f}{det:>8}{fpr:>7}")
             print()
-        half = arm["0.5|none"]["ems_miss"] / max(arm["1.0|none"]["ems_miss"],
-                                                 1e-12)
+        half = (arm[f"{GREED_STEALTH}|none"]["ems_miss"]
+                / max(arm[f"{GREED_MAX}|none"]["ems_miss"], 1e-12))
         arm["_headline"] = {
             "stealth_damage_frac": float(half),
-            "stealth_detect": arm["0.5|trust"]["detect"],
-            "stealth_fpr": arm["0.5|trust"]["fpr"],
-            "auth_miss_at_stealth": arm["0.5|auth"]["ems_miss"],
-            "auth_detect_at_stealth": arm["0.5|auth"]["detect"]}
+            "stealth_detect": arm[f"{GREED_STEALTH}|trust"]["detect"],
+            "stealth_fpr": arm[f"{GREED_STEALTH}|trust"]["fpr"],
+            "auth_miss_at_stealth": arm[f"{GREED_STEALTH}|auth"]["ems_miss"],
+            "auth_detect_at_stealth": arm[f"{GREED_STEALTH}|auth"]["detect"]}
         h = arm["_headline"]
         print(f"  greed 0.50: {half*100:.0f}% of max damage, detect "
               f"{h['stealth_detect']:.3f} vs FPR {h['stealth_fpr']:.3f}; "
@@ -236,8 +282,7 @@ def exp_greed(scen: str, seeds: int, rounds: int) -> dict:
         out[model] = arm
     out["_check"] = check_committed(
         f"results/priority_greed_{scen}.json",
-        {k: v for k, v in out["heinzelman"].items() if not k.startswith("_")},
-        "heinzelman")
+        {k: v for k, v in out["heinzelman"].items() if not k.startswith("_")})
     return out
 
 
@@ -278,8 +323,7 @@ def exp_bypass(scen: str, seeds: int, rounds: int) -> dict:
         out[model] = arm
     out["_check"] = check_committed(
         f"results/priority_bypass_{scen}.json",
-        {k: v for k, v in out["heinzelman"].items() if not k.startswith("_")},
-        "heinzelman")
+        {k: v for k, v in out["heinzelman"].items() if not k.startswith("_")})
     return out
 
 
@@ -301,21 +345,23 @@ def exp_freeride(scen: str, seeds: int, rounds: int) -> dict:
         print(f"{'att%':>5}{'protocol':<18}{'PDR':>7}{'Eadv':>7}"
               f"{'att CH%':>9}{'detect':>8}{'rnds':>6}")
         arm = {}
-        for frac in (0.1, 0.2, 0.3, 0.4):
+        for frac in FREERIDE_FRACS:
             for label, cls, wt in variants:
                 cfg = Config(max_rounds=rounds, attacker_frac=frac,
                              attack_kinds=kinds, **SCENARIOS[scen],
                              **radio_kw(scen, model))
                 runs = [m2_run_once(cfg, cls, s, wt) for s in range(seeds)]
-                m = {k: float(np.nanmean([r[k] for r in runs]))
-                     for k in runs[0]}
+                # mean_of, not a hand-rolled nanmean: it documents ttd=NaN as a
+                # legitimate "not applicable" and suppresses the resulting
+                # all-NaN-slice RuntimeWarning in one place.
+                m = mean_of(runs)
                 arm[f"{frac}|{label}"] = m
                 det = "-" if np.isnan(m["detect"]) else f"{m['detect']:.3f}"
                 print(f"{frac*100:>5.0f}{label:<18}{m['pdr']:>7.3f}"
                       f"{m['e_adv']:>7.2f}{m['att_ch_share']*100:>9.1f}"
                       f"{det:>8}{m['rounds']:>6.0f}")
             print()
-        e = [arm[f"{f}|CHIRP + trust"]["e_adv"] for f in (0.1, 0.2, 0.3, 0.4)]
+        e = [arm[f"{f}|CHIRP + trust"]["e_adv"] for f in FREERIDE_FRACS]
         arm["_headline"] = {"e_adv_min": float(min(e)),
                             "e_adv_max": float(max(e))}
         print(f"  CHIRP+trust attacker/honest residual energy: "
@@ -323,8 +369,7 @@ def exp_freeride(scen: str, seeds: int, rounds: int) -> dict:
         out[model] = arm
     out["_check"] = check_committed(
         f"results/module2_{scen}.json",
-        {k: v for k, v in out["heinzelman"].items() if not k.startswith("_")},
-        "heinzelman")
+        {k: v for k, v in out["heinzelman"].items() if not k.startswith("_")})
     return out
 
 
@@ -335,8 +380,6 @@ def exp_module1(scen: str, seeds: int, rounds: int) -> dict:
     scores tx_energy(d) directly, so changing the model changes the
     optimisation landscape itself, not just the bill.
     """
-    metrics = (("fnd", "higher"), ("hnd", "higher"), ("mj_per_reading",
-               "lower"), ("orphan", "lower"), ("intra", "lower"))
     out = {}
     for model in MODELS:
         print(f"\n--- {model}" + (f" (gamma={RADIO_EXP[scen]})"
@@ -355,25 +398,19 @@ def exp_module1(scen: str, seeds: int, rounds: int) -> dict:
             print(f"{name:<10}{d['fnd']:>7.1f}{d['hnd']:>7.1f}"
                   f"{d['lnd']:>7.1f}{d['mj_per_reading']:>12.4f}"
                   f"{d['orphan']*100:>9.1f}{d['intra']:>9.1f}")
-        sig = {}
-        for metric, better in metrics:
-            a = [r[metric] for r in raw["CHIRP"]]
-            b = [r[metric] for r in raw["CSGD-NET"]]
-            _, p = mannwhitneyu(
-                a, b, alternative="greater" if better == "higher" else "less")
-            ma, mb = float(np.mean(a)), float(np.mean(b))
-            sig[metric] = {"chirp": ma, "csgd": mb,
-                           "delta_pct": (ma - mb) / mb * 100 if mb else
-                           float("nan"), "p": float(p)}
-            print(f"  {metric:<15} CHIRP {ma:>9.2f}  CSGD-NET {mb:>9.2f}  "
-                  f"{sig[metric]['delta_pct']:>+7.1f}%  p={p:.4f}"
-                  f"{'  significant' if p < 0.05 else '  ns'}")
+        # Same helper run_module1 uses for the docs/module1.md table, so the
+        # two runners cannot disagree about direction or effect size.
+        sig = compare_runs(raw["CHIRP"], raw["CSGD-NET"])
+        for metric, st in sig.items():
+            print(f"  {metric:<15} CHIRP {st['a']:>9.2f}  "
+                  f"CSGD-NET {st['b']:>9.2f}  {st['delta_pct']:>+7.1f}%  "
+                  f"p={st['p']:.4f}"
+                  f"{'  significant' if st['p'] < 0.05 else '  ns'}")
         arm["_chirp_vs_csgd"] = sig
         out[model] = arm
     out["_check"] = check_committed(
         f"results/module1_{scen}.json",
-        {k: v for k, v in out["heinzelman"].items() if not k.startswith("_")},
-        "heinzelman")
+        {k: v for k, v in out["heinzelman"].items() if not k.startswith("_")})
     return out
 
 
@@ -382,7 +419,7 @@ def exp_ablation(scen: str, seeds: int, rounds: int) -> dict:
     term is the second most load-bearing. The knee is what made distant
     members so expensive; with gamma = 2 there is no knee at all, which is
     the harshest test the intra term can face."""
-    terms = ["w_energy", "w_rsu", "w_intra", "w_let", "w_balance"]
+    terms = ABLATION_TERMS
     base = Config(max_rounds=rounds, **SCENARIOS[scen])
     full = {t: getattr(base, t) for t in terms}
     out = {}
@@ -393,11 +430,9 @@ def exp_ablation(scen: str, seeds: int, rounds: int) -> dict:
               f"{'orphan%':>10}{'intra m':>9}")
         arm = {}
         for drop in [None] + terms:
-            w = dict(full)
-            if drop:
-                w[drop] = 0.0
-            s = sum(w.values()) or 1.0
-            w = {k: v / s * sum(full.values()) for k, v in w.items()}
+            # shared with run_module1.py --ablate, so both build the same
+            # objective by construction rather than by textual coincidence
+            w = ablation_weights(full, drop)
             cfg = Config(max_rounds=rounds, **w, **SCENARIOS[scen],
                          **radio_kw(scen, model))
             runs = [m1_run_once(cfg, CHIRP, sd) for sd in range(seeds)]
@@ -438,7 +473,7 @@ def exp_expsweep(scen: str, seeds: int, rounds: int) -> dict:
     out = {}
     print(f"\n{'gamma':>6}{'':>2}{'FND d%':>8}{'HND d%':>8}{'mJ d%':>8}"
           f"{'orphan d%':>11}{'intra d%':>10}")
-    for gamma in (2.0, 2.5, 2.75, 3.0):
+    for gamma in EXPSWEEP_GAMMAS:
         cfg = Config(max_rounds=rounds, **SCENARIOS[scen],
                      radio_model="logdistance", path_loss_exp=gamma)
         ra = [m1_run_once(cfg, CHIRP, s) for s in range(seeds)]
@@ -455,17 +490,72 @@ def exp_expsweep(scen: str, seeds: int, rounds: int) -> dict:
     return out
 
 
-def exp_crypto(*_ignored) -> dict:
+def exp_calibration(scen=None, seeds=0, rounds=0) -> dict:
+    """The two models side by side on one packet -- the table in docs/radio.md.
+
+    Analytic, like exp_crypto: takes the dispatcher's uniform signature and
+    uses none of it. Exists because the calibration table in docs/radio.md
+    must be reproducible by a committed command like every other table in
+    docs/ -- it demonstrates the one property the whole comparison rests on,
+    that eps_ld = eps_fs * d0^(2-gamma) makes both models charge the SAME
+    amplifier energy at d0, so their difference is tail behaviour and not
+    scale. If the calibration is ever changed, re-running this shows it.
+    """
+    del scen, seeds, rounds
+    ref = Config()
+    k = ref.packet_bits
+    models = {
+        "heinzelman": ref,
+        "logdist g=2.0": Config(radio_model="logdistance", path_loss_exp=2.0),
+        "logdist g=3.0": Config(radio_model="logdistance", path_loss_exp=3.0),
+    }
+    print(f"\nOne {k}-bit packet, mJ to transmit, and the ratio to Heinzelman.")
+    print(f"Calibration: eps_ld = eps_fs * d0^(2-gamma), so every model agrees "
+          f"at d0 = {ref.d0:.2f} m.\n")
+    print(f"  {'d (m)':>8}" + "".join(f"{n:>22}" for n in models))
+    out = {"packet_bits": k, "d0_m": float(ref.d0), "rows": {}}
+    for d in (30.0, 60.0, float(ref.d0), 90.0, 120.0, 150.0, 200.0, 300.0):
+        base = float(tx_energy(ref, k, d)) * 1e3
+        row, rec = f"  {d:>8.2f}", {}
+        for name, cfg in models.items():
+            mj = float(tx_energy(cfg, k, d)) * 1e3
+            rec[name] = {"mJ": mj, "ratio_vs_heinzelman": mj / base}
+            row += f"{mj:>13.4f} (x{mj / base:.2f})"
+        out["rows"][f"{d:g}"] = rec
+        print(row)
+    agree = {n: r["ratio_vs_heinzelman"]
+             for n, r in out["rows"][f"{float(ref.d0):g}"].items()}
+    out["agree_at_d0"] = all(abs(v - 1.0) < 1e-12 for v in agree.values())
+    print(f"\n  all models identical at d0: {out['agree_at_d0']}"
+          f"   (ratios {', '.join(f'{v:.6f}' for v in agree.values())})")
+    print("  Below d0 the logdistance g=3 curve is CHEAPER than free space and "
+          "above it\n  far cheaper than d^4 -- that gap is the whole "
+          "robustness question.")
+    return out
+
+
+BENCH_PATH = "results/crypto_bench.json"
+
+
+def exp_crypto(scen=None, seeds=0, rounds=0) -> dict:
     """Module 3b's ratio re-priced: ECDSA verification vs transmitting the
     signature it checks, under each radio model.
 
-    Pure computation on measured inputs -- no simulation. Timings come from
-    the committed results/crypto_bench.json; radio cost from tx_energy under
-    each model. The documented claim ("~15x at 90 m, 25x OBU slowdown,
+    Pure computation on measured inputs -- no simulation, so this takes the
+    dispatcher's uniform (scen, seeds, rounds) and uses none of them; it is
+    registered analytic=True so its _meta claims no seed count. Timings come
+    from the committed results/crypto_bench.json; radio cost from tx_energy
+    under each model. The documented claim ("~15x at 90 m, 25x OBU slowdown,
     0.5 W") has radio energy in its DENOMINATOR, so of the six findings this
     is the one with a direct mechanical dependence on the model.
     """
-    bench = json.loads(Path("results/crypto_bench.json").read_text())
+    del scen, seeds, rounds
+    p = Path(BENCH_PATH)
+    if not p.exists():
+        print(f"  [crypto] {BENCH_PATH} not found -- run this from the repo "
+              f"root, or `python3 src/crypto_bench.py` to generate it")
+        return {"_check": {"committed": BENCH_PATH, "status": "missing"}}
+    bench = json.loads(p.read_text())
     verify_us = bench["ecdsa"]["verify_us"]
     sig_bits = bench["sig_bits_digest"]
     slowdown, cpu_w = 25, 0.5            # the documented OBU assumption
@@ -476,7 +566,6 @@ def exp_crypto(*_ignored) -> dict:
                                                   path_loss_exp=2.0),
             "logdistance g=3.0 (urban)": Config(radio_model="logdistance",
                                                 path_loss_exp=3.0)}
-    from energy import tx_energy
     print(f"\nECDSA P-256 verify, {slowdown}x OBU slowdown, {cpu_w} W: "
           f"{verify_mj:.3f} mJ  (measured {verify_us:.1f} us)")
     print(f"vs transmitting the {sig_bits}-bit class-2 overhead:\n")
@@ -492,11 +581,9 @@ def exp_crypto(*_ignored) -> dict:
             tx = float(tx_energy(cfg, sig_bits, float(d))) * 1e3
             ratios[str(d)] = {"tx_mJ": tx, "ratio": verify_mj / tx}
             row += f"{verify_mj / tx:>8.1f}x"
-        # distance at which the radio catches up with the computation
-        ds = np.linspace(1, 2000, 200_000)
-        tx = np.asarray(tx_energy(cfg, sig_bits, ds), dtype=float) * 1e3
-        idx = np.argmax(tx >= verify_mj)
-        be = float(ds[idx]) if tx[idx] >= verify_mj else float("inf")
+        # distance at which the radio catches up with the computation,
+        # solved rather than scanned -- no grid resolution, no upper cap
+        be = break_even_distance(cfg, sig_bits, verify_mj)
         row += f"{be:>10.0f} m"
         print(row)
         out[name] = {"ratios": ratios, "break_even_m": be}
@@ -508,18 +595,44 @@ def exp_crypto(*_ignored) -> dict:
     return out
 
 
+class Exp(NamedTuple):
+    """One registered experiment.
+
+    `rounds` is an int, or a {scenario: rounds} mapping when the documented
+    command differs per scenario -- resolved uniformly in main() so no
+    experiment needs a special case there. `gammas` overrides the scenario's
+    default exponent for the metadata when an experiment sweeps it. `analytic`
+    marks a run with no simulation, so its _meta claims no seeds or rounds.
+    """
+    fn: Any
+    seeds: int
+    rounds: Any                     # int, or {scenario: int}
+    scenarios: tuple
+    analytic: bool = False
+    gammas: Any = None              # None -> RADIO_EXP[scenario]
+
+    def rounds_for(self, scen):
+        return self.rounds[scen] if isinstance(self.rounds, dict) else self.rounds
+
+    def gammas_for(self, scen):
+        return list(self.gammas) if self.gammas else RADIO_EXP.get(scen)
+
+
 EXPERIMENTS = {
-    "coverage": (exp_coverage, 6, 40, ("urban", "highway")),
-    "defence": (exp_defence, 12, 60, ("urban", "highway")),
-    "greed": (exp_greed, 12, 60, ("urban", "highway")),
-    "bypass": (exp_bypass, 12, 60, ("urban", "highway")),
-    "freeride": (exp_freeride, 12, 60, ("urban",)),
-    "module1": (exp_module1, 20, None, ("urban", "highway")),   # rounds per scen
-    "ablation": (exp_ablation, 10, 120, ("highway",)),
-    "expsweep": (exp_expsweep, 10, 150, ("urban",)),
-    "crypto": (exp_crypto, 0, 0, (None,)),
+    "coverage": Exp(exp_coverage, 6, 40, ("urban", "highway")),
+    "defence": Exp(exp_defence, 12, 60, ("urban", "highway")),
+    "greed": Exp(exp_greed, 12, 60, ("urban", "highway")),
+    "bypass": Exp(exp_bypass, 12, 60, ("urban", "highway")),
+    "freeride": Exp(exp_freeride, 12, 60, ("urban",)),
+    # the documented commands use 150 rounds in urban, 120 on the highway
+    "module1": Exp(exp_module1, 20, {"urban": 150, "highway": 120},
+                   ("urban", "highway")),
+    "ablation": Exp(exp_ablation, 10, 120, ("highway",)),
+    "expsweep": Exp(exp_expsweep, 10, 150, ("urban",),
+                    gammas=EXPSWEEP_GAMMAS),
+    "calibration": Exp(exp_calibration, 0, 0, (None,), analytic=True),
+    "crypto": Exp(exp_crypto, 0, 0, (None,), analytic=True),
 }
-M1_ROUNDS = {"urban": 150, "highway": 120}      # the documented commands
 
 
 def main():
@@ -536,24 +649,36 @@ def main():
     args = ap.parse_args()
 
     todo = list(EXPERIMENTS) if args.experiment == "all" else [args.experiment]
+    failures = []
     for name in todo:
-        fn, seeds, rounds, scens = EXPERIMENTS[name]
-        seeds = args.seeds or seeds
-        for scen in scens:
+        exp = EXPERIMENTS[name]
+        seeds = args.seeds or exp.seeds
+        for scen in exp.scenarios:
             if scen is not None and args.scenario != "both" \
                     and scen != args.scenario:
                 continue
-            r = M1_ROUNDS[scen] if name == "module1" else rounds
+            r = exp.rounds_for(scen)
             hdr = f"{name}" + (f" -- {scen}" if scen else "")
             if scen:
                 hdr += (f", {seeds} seeds, logdistance gamma="
-                        f"{RADIO_EXP[scen]}")
+                        f"{exp.gammas_for(scen)}")
             print(f"\n{'=' * 74}\n{hdr}\n{'=' * 74}")
-            out = fn(scen, seeds, r)
-            out["_meta"] = {"experiment": name, "scenario": scen,
-                            "seeds": seeds, "rounds": r,
-                            "path_loss_exp": RADIO_EXP.get(scen),
-                            "generated_by": "src/run_radio.py"}
+            out = exp.fn(scen, seeds, r)
+            meta = {"experiment": name, "scenario": scen,
+                    "generated_by": "src/run_radio.py"}
+            if not exp.analytic:
+                meta.update(seeds=seeds, rounds=r,
+                            path_loss_exp=exp.gammas_for(scen))
+            out["_meta"] = meta
+
+            # The guardrail ENFORCES: a drifted mirror must not be able to
+            # regenerate the docs silently. Anything but OK is a failure, and
+            # that includes a check that could not run at all.
+            status = (out.get("_check") or {}).get("status")
+            if status not in (None, "OK"):
+                failures.append(f"{name}" + (f"/{scen}" if scen else "")
+                                + f": {status}")
+
             if not args.dry:
                 Path("results").mkdir(exist_ok=True)
                 tag = f"radio_{name}" + (f"_{scen}" if scen else "")
@@ -561,6 +686,17 @@ def main():
                     json.dumps(out, indent=2))
                 print(f"\nwrote results/{tag}.json")
 
+    if failures:
+        print(f"\n{'=' * 74}\nGUARDRAIL FAILED -- a heinzelman arm no longer "
+              f"reproduces the committed\nresults it mirrors, so the "
+              f"logdistance arm proves nothing:\n")
+        for f in failures:
+            print(f"  {f}")
+        print("\nFix the mirror before trusting or regenerating any table in "
+              "docs/radio.md.")
+        return 1
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

@@ -1,0 +1,124 @@
+{
+  "packet_bits": 6400,
+  "d0_m": 87.70580193070292,
+  "rows": {
+    "30": {
+      "heinzelman": {
+        "mJ": 0.3776,
+        "ratio_vs_heinzelman": 1.0
+      },
+      "logdist g=2.0": {
+        "mJ": 0.3776,
+        "ratio_vs_heinzelman": 1.0
+      },
+      "logdist g=3.0": {
+        "mJ": 0.3397022313457131,
+        "ratio_vs_heinzelman": 0.8996351465723335
+      }
+    },
+    "60": {
+      "heinzelman": {
+        "mJ": 0.5504,
+        "ratio_vs_heinzelman": 1.0
+      },
+      "logdist g=2.0": {
+        "mJ": 0.5504,
+        "ratio_vs_heinzelman": 1.0
+      },
+      "logdist g=3.0": {
+        "mJ": 0.4776178507657048,
+        "ratio_vs_heinzelman": 0.867764990490016
+      }
+    },
+    "87.7058": {
+      "heinzelman": {
+        "mJ": 0.8123076923076923,
+        "ratio_vs_heinzelman": 1.0
+      },
+      "logdist g=2.0": {
+        "mJ": 0.8123076923076923,
+        "ratio_vs_heinzelman": 1.0
+      },
+      "logdist g=3.0": {
+        "mJ": 0.8123076923076921,
+        "ratio_vs_heinzelman": 0.9999999999999998
+      }
+    },
+    "90": {
+      "heinzelman": {
+        "mJ": 0.8658752,
+        "ratio_vs_heinzelman": 1.0
+      },
+      "logdist g=2.0": {
+        "mJ": 0.8384,
+        "ratio_vs_heinzelman": 0.9682688683080426
+      },
+      "logdist g=3.0": {
+        "mJ": 0.8519602463342537,
+        "ratio_vs_heinzelman": 0.9839296082556167
+      }
+    },
+    "120": {
+      "heinzelman": {
+        "mJ": 2.0452352,
+        "ratio_vs_heinzelman": 1.0
+      },
+      "logdist g=2.0": {
+        "mJ": 1.2416,
+        "ratio_vs_heinzelman": 0.6070695438842437
+      },
+      "logdist g=3.0": {
+        "mJ": 1.5809428061256388,
+        "ratio_vs_heinzelman": 0.7729882637095424
+      }
+    },
+    "150": {
+      "heinzelman": {
+        "mJ": 4.532,
+        "ratio_vs_heinzelman": 1.0
+      },
+      "logdist g=2.0": {
+        "mJ": 1.76,
+        "ratio_vs_heinzelman": 0.3883495145631068
+      },
+      "logdist g=3.0": {
+        "mJ": 2.782778918214138,
+        "ratio_vs_heinzelman": 0.6140288875141523
+      }
+    },
+    "200": {
+      "heinzelman": {
+        "mJ": 13.632,
+        "ratio_vs_heinzelman": 1.0
+      },
+      "logdist g=2.0": {
+        "mJ": 2.88,
+        "ratio_vs_heinzelman": 0.2112676056338028
+      },
+      "logdist g=3.0": {
+        "mJ": 6.157698176507586,
+        "ratio_vs_heinzelman": 0.4517090798494415
+      }
+    },
+    "300": {
+      "heinzelman": {
+        "mJ": 67.712,
+        "ratio_vs_heinzelman": 1.0
+      },
+      "logdist g=2.0": {
+        "mJ": 6.08,
+        "ratio_vs_heinzelman": 0.08979206049149338
+      },
+      "logdist g=3.0": {
+        "mJ": 20.022231345713102,
+        "ratio_vs_heinzelman": 0.2956969421330503
+      }
+    }
+  },
+  "agree_at_d0": true,
+  "_meta": {
+    "experiment": "calibration",
+    "scenario": null,
+    "generated_by": "src/run_radio.py"
+  }
+}

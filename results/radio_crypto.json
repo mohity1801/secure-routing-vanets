@@ -33,7 +33,7 @@
         "ratio": 0.19975176484474727
       }
     },
-    "break_even_m": 199.60164300821504
+    "break_even_m": 199.5991250092559
   },
   "logdistance g=2.0 (highway)": {
     "ratios": {
@@ -62,7 +62,7 @@
         "ratio": 2.224603865323606
       }
     },
-    "break_even_m": 454.24553122765616
+    "break_even_m": 454.24373105827516
   },
   "logdistance g=3.0 (urban)": {
     "ratios": {
@@ -91,14 +91,11 @@
         "ratio": 0.675528679477747
       }
     },
-    "break_even_m": 262.55046775233876
+    "break_even_m": 262.5439829988447
   },
   "_meta": {
     "experiment": "crypto",
     "scenario": null,
-    "seeds": 0,
-    "rounds": 0,
-    "path_loss_exp": null,
     "generated_by": "src/run_radio.py"
   }
 }

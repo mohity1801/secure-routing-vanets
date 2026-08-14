@@ -32,6 +32,16 @@ PROTOCOLS = {
     "PSO": PSOCluster, "GA": GACluster, "CSGD-NET": CSGDNet, "CHIRP": CHIRP,
 }
 
+# The fitness terms the ablation drops, and the metrics the CHIRP-vs-baseline
+# comparison reports. Module-level so run_radio.py's robustness re-runs share
+# one definition with the tables in docs/module1.md rather than copying them --
+# two copies only stay mirrors of each other by textual coincidence.
+ABLATION_TERMS = ["w_energy", "w_rsu", "w_intra", "w_let", "w_balance"]
+
+COMPARE_METRICS = (("fnd", "higher"), ("hnd", "higher"),
+                   ("mj_per_reading", "lower"), ("orphan", "lower"),
+                   ("intra", "lower"))
+
 SCENARIOS = {
     # Highway: 1 km of 6-lane bidirectional road, RSUs every 200 m.
     # Opposing lanes close at up to 66 m/s, so links break fastest here.
@@ -45,6 +55,35 @@ SCENARIOS = {
                     speed_mean=12.0, speed_std=3.0, speed_min=4.0,
                     speed_max=18.0, initial_energy=0.5, n_nodes=100),
 }
+
+
+def ablation_weights(full: dict, drop: str | None) -> dict:
+    """Zero one fitness term and renormalise the rest to the original total.
+
+    Shared with run_radio.py's ablation so both build the SAME objective: the
+    ablation is only meaningful as a comparison against the full weights, and
+    two copies of this arithmetic could silently diverge.
+    """
+    w = dict(full)
+    if drop:
+        w[drop] = 0.0
+    s = sum(w.values()) or 1.0
+    return {k: v / s * sum(full.values()) for k, v in w.items()}
+
+
+def compare_runs(runs_a: list, runs_b: list) -> dict:
+    """Mann-Whitney U over COMPARE_METRICS, one-sided in the direction the
+    metric improves. Returns {metric: {a, b, delta_pct, p}}."""
+    out = {}
+    for metric, better in COMPARE_METRICS:
+        a = [r[metric] for r in runs_a]
+        b = [r[metric] for r in runs_b]
+        alt = "greater" if better == "higher" else "less"
+        _, p = mannwhitneyu(a, b, alternative=alt)
+        ma, mb = float(np.mean(a)), float(np.mean(b))
+        out[metric] = {"a": ma, "b": mb, "p": float(p),
+                       "delta_pct": (ma - mb) / mb * 100 if mb else float("nan")}
+    return out
 
 
 def run_once(cfg, proto_cls, seed):
@@ -111,7 +150,7 @@ def main():
         # This is what separates "the multi-metric objective helps" from
         # "the Cuckoo Search engine helps" -- the engine is identical to
         # CSGD-NET's throughout.
-        terms = ["w_energy", "w_rsu", "w_intra", "w_let", "w_balance"]
+        terms = ABLATION_TERMS
         base = Config(max_rounds=args.rounds, **SCENARIOS[args.scenario])
         full = {t: getattr(base, t) for t in terms}
 
@@ -122,11 +161,7 @@ def main():
 
         rows = {}
         for drop in [None] + terms:
-            w = dict(full)
-            if drop:
-                w[drop] = 0.0
-            s = sum(w.values()) or 1.0
-            w = {k: v / s * sum(full.values()) for k, v in w.items()}
+            w = ablation_weights(full, drop)
             cfg = Config(max_rounds=args.rounds, **w, **SCENARIOS[args.scenario])
             runs = [run_once(cfg, CHIRP, sd) for sd in range(args.seeds)]
             m = {k: float(np.mean([r[k] for r in runs])) for k in runs[0]}
@@ -181,18 +216,10 @@ def main():
 
     # CHIRP vs the base paper's protocol, with significance
     print(f"\nCHIRP vs CSGD-NET  ({args.seeds} seeds, Mann-Whitney U)")
-    for metric, better in (("fnd", "higher"), ("hnd", "higher"),
-                           ("mj_per_reading", "lower"), ("orphan", "lower"),
-                           ("intra", "lower")):
-        a = [r[metric] for r in raw["CHIRP"]]
-        b = [r[metric] for r in raw["CSGD-NET"]]
-        alt = "greater" if better == "higher" else "less"
-        _, p = mannwhitneyu(a, b, alternative=alt)
-        ma, mb = np.mean(a), np.mean(b)
-        delta = (ma - mb) / mb * 100 if mb else float("nan")
-        sig = "significant" if p < 0.05 else "not significant"
-        print(f"  {metric:<10} CHIRP {ma:>9.2f}  CSGD-NET {mb:>9.2f}  "
-              f"{delta:>+7.1f}%   p={p:.4f}  {sig}")
+    for metric, st in compare_runs(raw["CHIRP"], raw["CSGD-NET"]).items():
+        sig = "significant" if st["p"] < 0.05 else "not significant"
+        print(f"  {metric:<10} CHIRP {st['a']:>9.2f}  CSGD-NET {st['b']:>9.2f}  "
+              f"{st['delta_pct']:>+7.1f}%   p={st['p']:.4f}  {sig}")
 
     Path("results").mkdir(exist_ok=True)
     Path(f"results/module1_{args.scenario}.json").write_text(json.dumps(out, indent=2))

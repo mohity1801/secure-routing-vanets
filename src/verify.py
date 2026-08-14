@@ -13,6 +13,7 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).parent))
 
 from config import Config                       # noqa: E402
+from energy import tx_energy                    # noqa: E402
 from network import Network                     # noqa: E402
 from protocols.csgd_net import CSGDNet          # noqa: E402
 from protocols.heed import HEED                 # noqa: E402
@@ -50,8 +51,12 @@ def test_energy_budget():
     r_cluster = np.sqrt(250 / np.pi)
     d_mem = 2 * r_cluster / 3          # mean distance to centre of a disc
     d_ch = 50 / 3                      # mean node-to-centre distance in a square
-    amp_mem = k * cfg.eps_fs * d_mem**2
-    amp_ch = k * cfg.eps_fs * d_ch**2
+    # Amplifier term only, taken from the simulator's own radio model rather
+    # than re-derived here -- tx_energy is model-aware (cfg.radio_model) and a
+    # hand-rolled eps_fs*d^2 would silently disagree with what the simulator
+    # charges the moment this script is run under anything but the default.
+    amp_mem = float(tx_energy(cfg, k, d_mem)) - e_elec_pkt
+    amp_ch = float(tx_energy(cfg, k, d_ch)) - e_elec_pkt
     print(f"  mean member->CH distance      ~ {d_mem:.1f} m  -> amp "
           f"{amp_mem*1e3:.5f} mJ")
     print(f"  mean CH->RSU distance         ~ {d_ch:.1f} m  -> amp "

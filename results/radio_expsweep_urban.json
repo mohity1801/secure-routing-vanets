@@ -30,9 +30,14 @@
   "_meta": {
     "experiment": "expsweep",
     "scenario": "urban",
+    "generated_by": "src/run_radio.py",
     "seeds": 10,
     "rounds": 150,
-    "path_loss_exp": 3.0,
-    "generated_by": "src/run_radio.py"
+    "path_loss_exp": [
+      2.0,
+      2.5,
+      2.75,
+      3.0
+    ]
   }
 }
