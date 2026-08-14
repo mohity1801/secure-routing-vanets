@@ -66,7 +66,9 @@ making any novelty claim.
       charged. Transmission cost of the whole crypto layer is +0.8–1.6 %;
       **computation cost is ~15× the transmission cost it enables**, which
       the base paper's model cannot see.
-- [ ] Week 1 — Figs. 11–15 regenerated
+- [x] **Base-paper Figs. 11–15 regenerated** — all six protocols; Figure 14
+      uses genuine 30-seed traces and pointwise 95% confidence intervals
+      (`figures/baseline/`)
 - [ ] **Module 4 — Deferred / Future Work** — intentionally outside the
       current BTP implementation scope; conceptual design retained for a later
       project phase or supervisor request
@@ -132,6 +134,7 @@ numbers, not the paper's.
 ```bash
 pip3 install numpy scipy matplotlib
 python3 src/run_baseline.py --seeds 30
+python3 src/plot_baseline_figures.py
 ```
 
 `scikit-learn` is not required by the current implementation. A future Module 4

@@ -81,6 +81,7 @@ a number.
 pip3 install numpy scipy matplotlib
 
 python3 src/run_baseline.py --seeds 30                       # Table 4 reproduction
+python3 src/plot_baseline_figures.py                         # base-paper Figs. 11–15
 python3 src/run_module1.py --scenario urban --seeds 20       # CH election
 python3 src/run_module2.py --scenario urban --seeds 12       # trust under attack
 python3 src/run_priority.py --scenario urban --seeds 12      # priority + false-priority
@@ -133,7 +134,7 @@ Open:
   robustness check is done). Does not block the BTP; blocks a journal
   submission.
 
-Also open: Figs. 11–15 regeneration, and the write-up.
+Also open: the write-up.
 
 `scikit-learn` is intentionally absent from the current dependency command: no
 current code imports it. A future Module 4 implementation may add the ML

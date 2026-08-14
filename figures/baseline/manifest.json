@@ -1,0 +1,52 @@
+{
+  "generated_by": "python3 src/plot_baseline_figures.py",
+  "sources": {
+    "results/baseline.json": "ee8c2423ebdf821b98a86cbc10aa95a221899eed1786cbda567ad125e8a17078",
+    "results/baseline_per_seed.json": "e446bbd62198f4ac310e3c957391fdf67cd11d76349ca006eda16f3157cf4a8a"
+  },
+  "protocols": [
+    "LEACH",
+    "LEACH-C",
+    "HEED",
+    "PSO",
+    "GA",
+    "CSGD-NET"
+  ],
+  "rounds": [
+    0,
+    50
+  ],
+  "fig14_ci": {
+    "kind": "pointwise two-sided 95% Student-t confidence interval",
+    "n_seeds": 30,
+    "degrees_of_freedom": 29,
+    "critical_value": 2.045229642132704,
+    "sample_standard_deviation_ddof": 1,
+    "bounds": [
+      0,
+      100
+    ]
+  },
+  "figures": {
+    "fig11": [
+      "fig11_mean_residual_energy_per_node.png",
+      "fig11_mean_residual_energy_per_node.pdf"
+    ],
+    "fig12": [
+      "fig12_live_nodes.png",
+      "fig12_live_nodes.pdf"
+    ],
+    "fig13": [
+      "fig13_dead_nodes.png",
+      "fig13_dead_nodes.pdf"
+    ],
+    "fig14": [
+      "fig14_dead_nodes_95ci.png",
+      "fig14_dead_nodes_95ci.pdf"
+    ],
+    "fig15": [
+      "fig15_cumulative_packets_rsu.png",
+      "fig15_cumulative_packets_rsu.pdf"
+    ]
+  }
+}

@@ -23,7 +23,7 @@ will bite you.
 | Module 5 — priority traffic and its attack | **done** | `docs/priority.md`, 12–16 seeds, both scenarios |
 | 802.11p path-loss robustness check | **done** | `docs/radio.md`, `src/run_radio.py`, six findings verified under both radio models |
 | **Module 4 — RSU-side IDS** | **DEFERRED / FUTURE WORK** | concept retained; see §5 |
-| Figs. 11–15 regeneration | not started | listed in `README.md` |
+| Base-paper Figs. 11–15 regeneration | **done** | `figures/baseline/`, `results/baseline_per_seed.json` |
 | Report / paper draft / slides | not started | — |
 
 **Every table in `docs/` is now produced by a committed command.** There are no
