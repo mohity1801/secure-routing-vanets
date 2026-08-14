@@ -76,7 +76,17 @@ clustering protocol for VANETs", a reviewer hands you P1.
   trust work.
 - ECC pseudonyms with conditional privacy — P3 and a large literature.
 - RF/autoencoder IDS on VeReMi — heavily saturated; **P2 is already there**.
-  This is why Module 4 is the candidate to cut if time is short.
+  This is why Module 4 is deferred outside the current BTP implementation scope,
+  rather than presented as a completed contribution.
+
+**Module 4 status — Deferred / Future Work.** Its proposed direction is retained:
+an RSU-side behavioural IDS evaluated on generated data and VeReMi, connected to
+a revoke → trust-reset → exclude feedback loop, with revocation-rather-than-
+demotion and duty rebalancing as candidate mitigations for Module 2's energy
+free ride. None of this is implemented or included in the current experimental
+results. If a later project phase or supervisor requires it, Module 4 can be
+implemented as an extension; the free-ride mitigations are the stronger research
+direction than another generic VeReMi classifier.
 
 **As contribution: yes, in five places, none of which is a mechanism.**
 

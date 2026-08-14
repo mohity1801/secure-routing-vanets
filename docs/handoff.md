@@ -1,10 +1,11 @@
 # Technical handoff
 
-State of the project at commit `8d4ec64`, branch `master`, working tree clean,
-**no remote configured — nothing has ever been pushed.**
+State reviewed at commit `f317a34`, branch `main`. Remote `origin` is
+configured at the GitHub repository.
 
 `CLAUDE.md` is the short orientation and is read automatically. This file is the
-long version: what is done, what is decided, what is open, and what will bite you.
+long version: what is done, what is decided or deferred, what is open, and what
+will bite you.
 
 ---
 
@@ -21,7 +22,7 @@ long version: what is done, what is decided, what is open, and what will bite yo
 | Module 3b — measured crypto cost | **done** | `docs/module3b.md`, `results/crypto_bench.json` |
 | Module 5 — priority traffic and its attack | **done** | `docs/priority.md`, 12–16 seeds, both scenarios |
 | 802.11p path-loss robustness check | **done** | `docs/radio.md`, `src/run_radio.py`, six findings verified under both radio models |
-| **Module 4 — RSU-side IDS** | **NOT STARTED** | see §5 |
+| **Module 4 — RSU-side IDS** | **DEFERRED / FUTURE WORK** | concept retained; see §5 |
 | Figs. 11–15 regeneration | not started | listed in `README.md` |
 | Report / paper draft / slides | not started | — |
 
@@ -121,35 +122,44 @@ trust FPR cost 0.015; the pre-crypto coverage/latency table (HEED 46.8/4.22/0.27
 
 ---
 
-## 5. Open decision 1 — Module 4
+## 5. Deferred / future work — Module 4
 
-**Intended:** RSU-side IDS, behavioural features → Random Forest / autoencoder,
-with a revoke → trust-reset → exclude loop, validated on VeReMi.
+**Decision:** Module 4 is retained as a planned extension but is intentionally
+outside the implementation scope of the current BTP. It is neither implemented
+nor evaluated here, and the current work claims no Module 4 results.
 
-**Actual state: nothing exists.** No `run_module4.py`, no `ids.py`, no
-`docs/module4.md`, no `sklearn` import anywhere in `src/`. The only "VeReMi" in
-the code is a docstring in `attacks.py` explaining what VeReMi does *not*
-contain. (`scikit-learn` is in the README install line, provisioned and unused.)
+**Proposed direction:** an RSU-side IDS using behavioural features with a Random
+Forest / autoencoder, a revoke → trust-reset → exclude feedback loop, and future
+validation on generated data plus VeReMi. This motivation and design direction
+remain part of the project roadmap.
 
-**The case for cutting it**, from `docs/related_work.md`:
-- Comparison paper P2 (*SN Computer Science* 2026) already runs RF-style ML on
-  the same public VeReMi dataset from Kaggle.
-- **VeReMi never simulated routing**, so it contains none of the Layer-A attacks
-  this project actually defends against. Validating on it would prove little.
-- Nothing else in the project depends on it.
+**Current evidence boundary:** there is no `run_module4.py`, `ids.py`,
+`docs/module4.md`, VeReMi ingest path, `sklearn` import, experiment, or result.
+The current dependency commands therefore omit `scikit-learn`; a future Module
+4 implementation can add the ML dependency selected by its final design.
 
-**The case for building it:** Module 2 identified two remedies for the energy
-free ride — *revocation rather than demotion*, and *duty rebalancing* — and both
-were assigned to Module 4. They are the one unfinished thread from a headline
-finding.
+The deferral is deliberate. Comparison paper P2 (*SN Computer Science* 2026)
+already runs RF-style ML on the public VeReMi dataset, while VeReMi never
+simulated routing and therefore contains none of the Layer-A attacks defended
+against by the implemented trust layer. Nothing in the current modules depends
+on Module 4, so deferring it does not change their experiments or conclusions.
 
-If cutting: say so in `README.md` and `docs/related_work.md`, and drop
-`scikit-learn` from the install line. If building: the free-ride remedies are
-the valuable half, not the classifier.
+Two potential mitigations from Module 2 remain assigned to this future work:
+
+1. **Revocation rather than demotion** — remove a confirmed attacker instead of
+   rewarding it with relief from cluster-head duty.
+2. **Duty rebalancing** — prevent exclusion from becoming an energy reward by
+   retaining an appropriate forwarding obligation.
+
+Neither mitigation is implemented or included in the current experimental
+results. If a later project phase or supervisor requires Module 4, it can be
+implemented as an extension without restructuring or re-labelling the completed
+Modules 1–3 and 5. The free-ride remedies are the valuable research thread; a
+generic VeReMi classifier alone has limited novelty.
 
 ---
 
-## 6. Open decision 2 — publication blockers
+## 6. Publication blockers
 
 One resolved, one open. Neither blocked the BTP.
 
@@ -208,7 +218,7 @@ cat docs/handoff.md                # this file
 cat docs/related_work.md           # before any novelty claim
 python3 src/regression_gate.py /tmp/now.json && \
   python3 src/regression_gate.py --diff results/regression_reference.json /tmp/now.json
-git log --oneline                  # 7 commits, each with its findings in the message
+git log --oneline                  # commit history
 ```
 
 The commit messages are written to be read — each carries the finding, not just

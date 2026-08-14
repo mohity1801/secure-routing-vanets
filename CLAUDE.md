@@ -32,8 +32,8 @@ results/        JSON emitted by the runners; regression_reference.json is specia
 result, add the runner too — do not leave it in an inline script.
 
 Module numbering is historical: **Module 5 (priority) lives in
-`docs/priority.md`**, not `docs/module5.md`. Module 4 (RSU-side IDS) is not
-built.
+`docs/priority.md`**, not `docs/module5.md`. Module 4 (RSU-side IDS) is retained
+as **Deferred / Future Work** and is not implemented in the current BTP.
 
 ## The one invariant that matters
 
@@ -78,7 +78,7 @@ a number.
 ## Running things
 
 ```bash
-pip3 install numpy scipy matplotlib scikit-learn
+pip3 install numpy scipy matplotlib
 
 python3 src/run_baseline.py --seeds 30                       # Table 4 reproduction
 python3 src/run_module1.py --scenario urban --seeds 20       # CH election
@@ -117,19 +117,29 @@ under log-distance path loss; the urban premium on priority's cost was a knee
 artifact and is re-scoped). Both scenarios, crypto charged, regression gate
 passing.
 
-Open, and **both need a decision from the user rather than more code**:
+Deferred by decision:
 
-- **Module 4** (RSU-side IDS on VeReMi) — not started, and the least novel
-  piece. A 2026 paper already does RF-style ML on the same public dataset, and
-  VeReMi contains none of the Layer-A attacks this project defends against. The
-  candidate to cut. See `docs/related_work.md`.
+- **Module 4 — Deferred / Future Work.** The proposed RSU-side behavioural IDS
+  on generated data and VeReMi, its revoke → trust-reset → exclude feedback
+  loop, and the revocation/duty-rebalancing remedies remain planned extensions.
+  They are outside the current BTP implementation and have no claimed results.
+  If a later project phase or supervisor requires Module 4, it can be added
+  without changing the scope or evidence of the implemented modules. See
+  `docs/related_work.md` and `docs/handoff.md`.
+
+Open:
+
 - **Publication blocker** — real SUMO traces (the remaining one; the 802.11p
   robustness check is done). Does not block the BTP; blocks a journal
   submission.
 
 Also open: Figs. 11–15 regeneration, and the write-up.
 
-`docs/handoff.md` carries the full state, the open decisions, and the traps —
+`scikit-learn` is intentionally absent from the current dependency command: no
+current code imports it. A future Module 4 implementation may add the ML
+dependency it actually chooses.
+
+`docs/handoff.md` carries the full state, deferred scope, open work, and traps —
 read it before starting anything substantial.
 
 ## Findings a fresh session would otherwise re-derive

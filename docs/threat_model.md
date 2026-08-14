@@ -35,8 +35,10 @@ claiming full battery next to the RSU wins CH every round.
 
 ### Layer B — message / data layer
 
-Falsified content in beacons and aggregates. **Maps onto VeReMi Extension**, so
-each is both simulated by us and available as real labelled data.
+Falsified content in beacons and aggregates. Several families map onto VeReMi
+Extension and motivate the proposed Module 4 evaluation. The table records
+dataset coverage and intended scope; the current BTP does not ingest VeReMi or
+claim Module 4 experiments.
 
 | Family | Variants | VeReMi Ext. |
 |---|---|---|
@@ -52,8 +54,9 @@ has no clustering. A compromised CH that fabricates the fused reading is unique
 to the CSGD-NET architecture we are extending, and it is what the aggregate-MAC
 in Module 3 exists to catch.
 
-Exact VeReMi Extension attacker-type IDs are confirmed against the dataset at
-ingest time rather than hard-coded from the paper.
+If Module 4 is implemented, exact VeReMi Extension attacker-type IDs must be
+confirmed against the dataset at ingest time rather than hard-coded from the
+paper.
 
 ## Defence mapping
 
@@ -63,10 +66,14 @@ ingest time rather than hard-coded from the paper.
 | Bad-mouthing, ballot-stuffing | Module 2 credibility-weighted recommendations | trust MAE for honest nodes |
 | On-off | Module 2 trust decay + penalty asymmetry | trust recovery time |
 | Sybil | Module 3 rate-limited pseudonyms + RSSI/position plausibility | Sybil detection rate |
-| DoS | Module 4 beacon-rate feature | detection rate, FPR |
+| DoS | Module 4 (deferred): proposed beacon-rate feature | future detection rate, FPR — not reported here |
 | Replay, stale | Module 3 timestamp + nonce window | replay acceptance rate |
-| Position/speed falsification | Module 4 IDS (kinematic plausibility) | detection rate, FPR, on VeReMi |
+| Position/speed falsification | Module 4 (deferred): proposed kinematic-plausibility IDS | future detection rate, FPR on VeReMi — not reported here |
 | False-data injection | Module 3 aggregate-MAC | forged-aggregate acceptance rate |
+
+The rows labelled Module 4 are future defence mappings, not implemented
+mechanisms or current results. Module 4 remains a planned extension that can be
+added if required by a later project phase or supervisor direction.
 
 ## Evaluation
 

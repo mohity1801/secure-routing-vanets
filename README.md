@@ -36,9 +36,11 @@ making any novelty claim.
    conditional privacy (RSU can de-anonymise a misbehaver), aggregate-MAC over
    CH output, Sybil resistance via rate-limited issuance and RSSI/position
    plausibility. Measured cost: bytes, ms, mJ per operation.
-4. **RSU-side IDS** — behavioural features → Random Forest / autoencoder,
-   with a revoke → trust-reset → exclude feedback loop. Validated on the
-   generated dataset and on the public VeReMi dataset.
+4. **RSU-side IDS — Deferred / Future Work** — proposed behavioural features →
+   Random Forest / autoencoder, with a revoke → trust-reset → exclude feedback
+   loop and validation on generated data plus the public VeReMi dataset. This
+   direction is retained, but it is outside the current BTP implementation;
+   no Module 4 experimental results are claimed here.
 5. **Priority traffic** — a second traffic class for emergency vehicles, which
    aggregation is structurally hostile to: fusion forces every reading to wait
    for the whole TDMA frame. Reserved slots bypass fusion, the reservation is a
@@ -65,7 +67,9 @@ making any novelty claim.
       **computation cost is ~15× the transmission cost it enables**, which
       the base paper's model cannot see.
 - [ ] Week 1 — Figs. 11–15 regenerated
-- [ ] Week 3 — Module 2, attack models, Module 4
+- [ ] **Module 4 — Deferred / Future Work** — intentionally outside the
+      current BTP implementation scope; conceptual design retained for a later
+      project phase or supervisor request
 - [ ] Week 4 — full sweeps, statistics, paper draft, report, slides
 
 ## Reproduction result
@@ -118,12 +122,17 @@ Most of the load-bearing criticisms are not numerical:
    Eqs. (9)–(11) at Table 3's parameters, so they cannot serve as a baseline.
    We re-implement and report our own measurements instead.
 
-Items 1–2 are what Module 1's multi-metric fitness fixes; 3–4 are Modules 1–4;
-5 is why every comparison in this project uses our numbers, not the paper's.
+Items 1–2 are what Module 1's multi-metric fitness fixes; 3–4 motivate the
+implemented mobility, trust, crypto, and priority work, with Module 4 retained
+as a future IDS extension; 5 is why every comparison in this project uses our
+numbers, not the paper's.
 
 ## Run
 
 ```bash
-pip3 install numpy scipy matplotlib scikit-learn
+pip3 install numpy scipy matplotlib
 python3 src/run_baseline.py --seeds 30
 ```
+
+`scikit-learn` is not required by the current implementation. A future Module 4
+implementation may introduce an ML dependency when its design is fixed.

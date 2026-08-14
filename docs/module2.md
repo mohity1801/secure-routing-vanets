@@ -100,12 +100,17 @@ attacker is spared the very duty that drains honest nodes, and ends with 2.0–2
 their residual energy.
 
 This is a real limitation of demotion-based defence and it is worth stating
-plainly. Two remedies, both belonging to Module 4:
+plainly. Two candidate remedies are retained for Module 4, which is deferred as
+future work:
 
 1. **Revocation rather than demotion.** Remove the node from the network
    instead of merely making it ineligible to lead.
 2. **Duty rebalancing.** Require distrusted nodes to carry forwarding load they
    cannot profit from skipping, so exclusion is not a reward.
+
+Neither remedy is implemented or evaluated in the current BTP, and the results
+above do not claim their effect. They remain proposed mitigations for a future
+Module 4 implementation or a later supervisor-directed project phase.
 
 It also means a security defence cannot be validated on energy metrics alone —
 an attacker wins on energy by construction.
