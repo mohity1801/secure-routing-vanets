@@ -1,0 +1,152 @@
+{
+  "generated_by": "python3 src/generate_final_results.py",
+  "source_policy": "Every numerical value is read from a committed, unmodified JSON result artifact or mathematically derived from such values.",
+  "sources": {
+    "results/crypto_bench.json": "f2b57d3f2c47ff5d80327527fe213a4450fb53ce989b524d359f5333d9b45fe8",
+    "results/module1_highway.json": "ea16bad41f515ea7581d8be8161be3a4b9fb4f8fd872169f7bd2a064f2a53315",
+    "results/module1_urban.json": "beb2415b15f2e48af0eafb560f296ed2292bf756ec57ced2ce48224b9c14413d",
+    "results/module2_urban.json": "549f0d05cb95a45a66fffa12025419847ea02d8939457beab5472185e4be7c92",
+    "results/priority_bypass_highway.json": "e5c3d3c4003876ce6beea4a2ebe2b584ac2cf96a2bad356d6995777471ec0309",
+    "results/priority_bypass_urban.json": "3279a8f05e6920691baaea68354df1de835ed667f4164ea35e5a8faa2ab3ed33",
+    "results/priority_cryptodecomp_highway.json": "15b6cdc2660a4d2a7fc43552efba3406fc50dcaa38fe116f2fcb0200cb30f2f0",
+    "results/priority_cryptodecomp_urban.json": "d4074b41cf5d11496abec6d5682a242158638eaabd24968c6bfc7f9e017d4534",
+    "results/priority_defence_highway.json": "fc73426d39fd52a357693da1a6631bd482cbfd551b4b5cff98970e406b95b9a7",
+    "results/priority_defence_urban.json": "d40ad0cdf956cd82f858c755b2945a236c4f06dbf51f90ca7b5ae5b3c83f846a",
+    "results/radio_ablation_highway.json": "b10d5abf8dfe6b7da7d231e4336de09e769fce01ba93cbbf8e56d6df76b7c85a",
+    "results/radio_bypass_highway.json": "627577d92045018ab35ff750f7086ee169bffa2d891a6af335d3df57acf8d70e",
+    "results/radio_bypass_urban.json": "620780ac959b736430e144efaf51c90424fa64aec2017d0595da7a906be8a4d2",
+    "results/radio_coverage_highway.json": "dcde24eb6991a2da2f0f4c3731c117d51cf7ad185f0cec63d30153f034d22e9f",
+    "results/radio_coverage_urban.json": "7b6ef49bda322b11e99f54937ab95c16ba25f40f925109d373b53b247bbb651f",
+    "results/radio_crypto.json": "fc52471aefe656de59b903d9fc74eb41ec7d101aab59cc7ff87328f79f91750d",
+    "results/radio_defence_highway.json": "0e3e42209e30bf23d0ee99724af370fb7f42eeb6bd758effc06fec44d7310025",
+    "results/radio_defence_urban.json": "02359b535e33ee2a55571aa29fbed2bc3d1893344de8d5eaadb75a8d85e85065",
+    "results/radio_freeride_urban.json": "d5711e8b3aa2e1f6c3c32c65987b57881e08ede7cadc77e008fec494983c13e2",
+    "results/radio_greed_highway.json": "c9912356955766227b6fbd90fb506735cad0962dd0fe3f91064bbb4c0befa715",
+    "results/radio_greed_urban.json": "7bc9876aaefec57c57795b3e2fbb3614bfcedf875f919eb0247957d4d5840ee9",
+    "results/radio_module1_highway.json": "cdfe62a4ea77a1266bbe012792ecbf6b119cf5f27292e5beb864495f6e4b19b2",
+    "results/radio_module1_urban.json": "77fa4152abbf054a7c73a4eb2082fb9045fa8154e28af27370e005332756e96c"
+  },
+  "tables": {
+    "Module 1 metrics and ablation": {
+      "files": [
+        "module1_key_metrics_and_ablation.md"
+      ],
+      "sources": [
+        "results/module1_urban.json",
+        "results/module1_highway.json",
+        "results/radio_module1_urban.json",
+        "results/radio_module1_highway.json",
+        "results/radio_ablation_highway.json"
+      ],
+      "derived_metrics": [
+        "orphan fraction × 100",
+        "stored current-default ablation deltas"
+      ],
+      "seed_information": {
+        "urban": 20,
+        "highway": 20,
+        "current-default highway ablation": 10
+      },
+      "statistics": "Aggregate descriptive results; no reconstructed uncertainty."
+    },
+    "Module 2 trust/security and free ride": {
+      "files": [
+        "module2_trust_security_and_free_ride.md"
+      ],
+      "sources": [
+        "results/module2_urban.json",
+        "results/radio_freeride_urban.json"
+      ],
+      "derived_metrics": [
+        "fractions × 100 for percentage columns"
+      ],
+      "seed_information": {
+        "urban": 12
+      },
+      "statistics": "Aggregate means only; no new significance test."
+    },
+    "Priority bypass and DoS defence": {
+      "files": [
+        "priority_bypass_and_dos_defence.md"
+      ],
+      "sources": [
+        "results/priority_bypass_urban.json",
+        "results/priority_bypass_highway.json",
+        "results/priority_defence_urban.json",
+        "results/priority_defence_highway.json",
+        "results/radio_bypass_urban.json",
+        "results/radio_bypass_highway.json",
+        "results/radio_defence_urban.json",
+        "results/radio_defence_highway.json"
+      ],
+      "derived_metrics": [
+        "headline fraction matched from stored headline values"
+      ],
+      "seed_information": {
+        "urban": 12,
+        "highway": 12
+      },
+      "statistics": "Stored paired p-value only; other values are aggregate means."
+    },
+    "Crypto sizes, timings and decomposition": {
+      "files": [
+        "crypto_sizes_timings_and_transmission.md"
+      ],
+      "sources": [
+        "results/crypto_bench.json",
+        "results/priority_cryptodecomp_urban.json",
+        "results/priority_cryptodecomp_highway.json"
+      ],
+      "derived_metrics": [],
+      "seed_information": {
+        "crypto decomposition": "not encoded in source JSON"
+      },
+      "statistics": "Stored benchmark means and paired p-values only."
+    },
+    "Radio robustness verdicts": {
+      "files": [
+        "radio_robustness_verdict.md"
+      ],
+      "sources": [
+        "results/radio_coverage_urban.json",
+        "results/radio_coverage_highway.json",
+        "results/radio_defence_urban.json",
+        "results/radio_defence_highway.json",
+        "results/radio_freeride_urban.json",
+        "results/radio_greed_urban.json",
+        "results/radio_greed_highway.json",
+        "results/radio_module1_urban.json",
+        "results/radio_module1_highway.json",
+        "results/radio_ablation_highway.json",
+        "results/radio_crypto.json",
+        "results/radio_bypass_urban.json",
+        "results/radio_bypass_highway.json"
+      ],
+      "derived_metrics": [
+        "verdict rules are listed in the generated table; greed damage/auth and detect≤FPR are evaluated separately",
+        "no result number is introduced outside the source artifacts"
+      ],
+      "seed_information": {
+        "coverage": 6,
+        "defence/free ride/greed": 12,
+        "Module 1": 20,
+        "ablation": 10,
+        "crypto": "analytic from benchmark assumptions"
+      },
+      "statistics": "Stored statistics and direction checks only."
+    }
+  },
+  "outputs": {
+    "README.md": "0ea69c87efe4349e5e90c2307a342dab29ca2a45d3a92b5bda6a505059b303e7",
+    "crypto_sizes_timings_and_transmission.md": "da562e43fd6df594830c7c5a1dbcbca9f76a112cb962d3c2012f50557683cf4d",
+    "module1_key_metrics_and_ablation.md": "b7d0127d23adaef0d1977728ce6d4a79d7e4023f0fa4422d84fbf351cdbebf46",
+    "module2_trust_security_and_free_ride.md": "1243f05af56b741bf14dcd3526a7414fd57bb037bc9ea1e370a129a9960e8eb0",
+    "priority_bypass_and_dos_defence.md": "f7bfeb528a5575434a3e279bcbf5d471c4b13b77e61666d17f5f08b987348a9c",
+    "radio_robustness_verdict.md": "51c33c5555c9cb9bbf0ede4b8c15dc64f7dcd8c2a6719820785a66573d699d73"
+  },
+  "excluded": {
+    "formal_verification_table": "not generated: no committed machine-readable Scyther result artifact",
+    "module4": "not generated: Deferred / Future Work",
+    "baseline_figures_11_15": "unchanged; generated separately in figures/baseline"
+  }
+}
